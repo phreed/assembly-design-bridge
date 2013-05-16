@@ -1,0 +1,57 @@
+ 
+package edu.vanderbilt.isis.meta;
+
+/**
+* Advanced Vehicle Make (AVM) META interactive communications.
+* This is the schema for communication through the Component
+* Design Bridge (CDB).
+*/
+
+import "XsdTypes.proto";
+import "AssemblyInterface.proto";
+
+/**
+*  
+*/
+message Message {
+    enum MessageType {
+      /** express interest in something */
+      INTEREST = 0;
+      /** update only the fields supplied */
+      UPDATE = 1;
+      /** insert new or update all the fields */
+      FILL = 2;
+      /** do whatever is needed to dispose of the items */
+      TRASH = 3;
+    }
+    required MessageType type = 1;
+
+    optional ID _id = 2;
+    optional Assemblies assemblies = 3;
+    repeated Notice notices = 4;
+}
+
+/**
+* Usually used for reporting faults of various types.
+*/
+message Notice {
+    enum NoticeType {
+      /** the target model was probably damaged */
+      FAIL = 0;
+      /** no part of the request was performed */
+      REJECT = 1;
+      /** there was a severe problem but it "worked" */
+      ERROR = 2;
+      /** there was a problem but the model is still consistent (probably) */
+      WARN = 3;
+      /** something interesting happened */
+      INFO = 4;
+      /** what you asked for was completed */
+      ACK = 5;
+    }
+    required NoticeType type = 1;
+    optional ID _id = 2;
+    optional string msg = 3;
+    optional string code = 4;
+}
+

@@ -1,0 +1,16 @@
+
+package edu.vanderbilt.isis.meta;
+
+/**
+* The ID is a universal unique identifier.
+* It should be manipulated using a UUID
+* http://en.wikipedia.org/wiki/Universally_unique_identifier
+* Java: http://docs.oracle.com/javase/7/docs/api/java/util/UUID.html 
+* C++: http://www.boost.org/doc/libs/1_53_0/libs/uuid/
+* C#:
+* Python:
+*/
+message ID {
+        required bytes uuid = 1;
+}
+
