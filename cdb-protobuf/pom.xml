@@ -1,0 +1,146 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <groupId>edu.vanderbilt.isis.meta</groupId>
+  <version>1.0.0</version>
+
+   <prerequisites>
+     <maven>3.0.4</maven>
+   </prerequisites>
+
+   <modelVersion>4.0.0</modelVersion>
+   <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+
+  <artifactId>cdb-protobuf</artifactId>
+  <packaging>jar</packaging>
+
+  <name>meta protocol buffer message</name>
+  <url>http://maven.apache.org</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>pb24</id>
+      <activation>
+         <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <genClassifier>protoc24</genClassifier>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+      <plugins>
+       <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>generate-java-sources</id>
+              <phase>generate-sources</phase>
+              <configuration>
+                <tasks>
+                  <mkdir dir="target/generated-sources"/>
+                  <exec executable="protoc">
+                    <arg value="--proto_path=src/main/protobuf"/>
+                    <arg value="--java_out=target/generated-sources"/>
+                    <arg value="src/main/protobuf/CdbMsg.proto"/>
+                  </exec>
+                  <exec executable="protoc">
+                    <arg value="--proto_path=src/main/protobuf"/>
+                    <arg value="--java_out=target/generated-sources"/>
+                    <arg value="src/main/protobuf/XsdTypes.proto"/>
+                  </exec>
+                  <exec executable="protoc">
+                    <arg value="--proto_path=src/main/protobuf"/>
+                    <arg value="--java_out=target/generated-sources"/>
+                    <arg value="src/main/protobuf/AssemblyInterface.proto"/>
+                  </exec>
+                </tasks>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+	    <version>2.3.2</version>
+            <configuration>
+                <source>1.6</source>
+                <target>1.6</target>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+                <classifier>${genClassifier}</classifier>
+                <archive>
+                    <index>true</index>
+                    <manifest>
+                        <classpathPrefix>lib/</classpathPrefix>
+                        <addClasspath>true</addClasspath>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+<!-- include the data contract in the build products -->
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${basedir}/src/main/protobuf/CdbMsg.proto</file>
+                  <type>proto</type>
+                  <classifier>cdb-message</classifier>
+                </artifact>
+                <artifact>
+                  <file>${basedir}/src/main/protobuf/XsdTypes.proto</file>
+                  <type>proto</type>
+                  <classifier>cdb-xsd</classifier>
+                </artifact>
+                <artifact>
+                  <file>${basedir}/src/main/protobuf/AssemblyInterface.proto</file>
+                  <type>proto</type>
+                  <classifier>cdb-assembly</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+            
+      </plugins>
+  </build>
+</project>
