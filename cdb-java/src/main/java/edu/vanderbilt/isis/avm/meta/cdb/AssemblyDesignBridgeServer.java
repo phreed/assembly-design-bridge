@@ -24,6 +24,7 @@ public class AssemblyDesignBridgeServer {
 			.getLogger(AssemblyDesignBridgeServer.class);
 
 	public static void main(String[] args) throws Exception {
+		logger.info("starting server");
 		final ServerBootstrap bootstrap = new ServerBootstrap();
 		final EventLoopGroup bossGroup = new NioEventLoopGroup();
 		final EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -50,8 +51,11 @@ public class AssemblyDesignBridgeServer {
 					.option(ChannelOption.TCP_NODELAY, true)
 					.option(ChannelOption.SO_KEEPALIVE, true);
 
-			final ChannelFuture future = bootstrap.bind(
-					new InetSocketAddress(32445)).sync();
+			final int port = 32445;		
+			final InetSocketAddress isoc = new InetSocketAddress(port);
+
+			logger.info("creating the server socket {}:{}", isoc.getAddress(), port);
+			final ChannelFuture future = bootstrap.bind(isoc).sync();
 
 			future.channel().closeFuture().sync();
 		} finally {
