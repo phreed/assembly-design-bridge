@@ -9,9 +9,6 @@
     </encoder>
   </appender>
 
-  <logger name="chapters.configuration" level="INFO" />
-
-  <!-- turn OFF all logging (children can override) -->
   <root level="VERBOSE">
     <appender-ref ref="STDOUT" />
   </root>
