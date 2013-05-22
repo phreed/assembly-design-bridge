@@ -431,7 +431,6 @@
 		</xsd:sequence>
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
--->
 
 	<xsd:complexType name="MaterialPropertyType">
 		<xsd:attribute name="PropertyName" type="xsd:string" use="required"/>
@@ -449,6 +448,7 @@
 		<xsd:attribute name="MaterialType" type="xsd:string" use="required"/>
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
+-->
 
 	<xsd:complexType name="AnalysesType">
 		<xsd:sequence>

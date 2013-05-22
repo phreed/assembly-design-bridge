@@ -270,21 +270,6 @@ message MassType {
 	optional ID _id = 4;
 }
 
-message MaterialPropertyType {
-	required string PropertyName = 1;
-	required string Units = 2;
-	required double Value = 3;
-	optional ID _id = 4;
-}
-
-message MaterialType {
-	repeated MaterialPropertyType MaterialProperty = 1;
-	required string MaterialID = 2;
-	required string MaterialName = 3;
-	required string MaterialType = 4;
-	optional ID _id = 5;
-}
-
 message MetricType {
 	required string ID = 1;
 	required string Type = 2;
