@@ -424,6 +424,7 @@
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
 
+<!--
 	<xsd:complexType name="MaterialsType">
 		<xsd:sequence>
 			<xsd:element name="Material" type="MaterialType" maxOccurs="unbounded"/>
@@ -447,6 +448,7 @@
 		<xsd:attribute name="MaterialType" type="xsd:string" use="required"/>
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
+-->
 
 	<xsd:complexType name="AnalysesType">
 		<xsd:sequence>
@@ -462,7 +464,9 @@
 		<xsd:sequence>
 			<xsd:element name="Assembly" type="AssemblyType" minOccurs="0" maxOccurs="unbounded"/>
 			<xsd:element name="DataExchange" type="DataExchangeType" minOccurs="0"/>
+<!--
 			<xsd:element name="Materials" type="MaterialsType" minOccurs="0" maxOccurs="unbounded"/>
+-->
 			<xsd:element name="UnassembledComponents" type="UnassembledComponentsType" minOccurs="0"/>
 			<xsd:element name="Assemblies" type="AssembliesType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
@@ -561,6 +565,8 @@
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
 
+<!--
  <xsd:element name="Assemblies" type="AssembliesType"/>
+-->
 
 </xsd:schema>
