@@ -27,7 +27,7 @@ message Message {
     required MessageType type = 1;
 
     optional ID _id = 2;
-    optional Assemblies assemblies = 3;
+    optional AssembliesType assemblies = 3;
     repeated Notice notices = 4;
 }
 

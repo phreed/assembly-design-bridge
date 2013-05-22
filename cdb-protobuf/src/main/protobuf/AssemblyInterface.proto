@@ -38,18 +38,13 @@ message AnalysisConstraintsType {
 	optional ID _id = 2;
 }
 
-message Assemblies {
-	required AssembliesType Assemblies = 1;
-}
-
 message AssembliesType {
 	repeated AssemblyType Assembly = 1;
 	optional DataExchangeType DataExchange = 2;
-	repeated MaterialsType Materials = 3;
-	optional UnassembledComponentsType UnassembledComponents = 4;
-	repeated AssembliesType Assemblies = 5;
-	required string VersionInfo = 6;
-	optional ID _id = 7;
+	optional UnassembledComponentsType UnassembledComponents = 3;
+	repeated AssembliesType Assemblies = 4;
+	required string VersionInfo = 5;
+	optional ID _id = 6;
 }
 
 message AssemblyType {
@@ -288,11 +283,6 @@ message MaterialType {
 	required string MaterialName = 3;
 	required string MaterialType = 4;
 	optional ID _id = 5;
-}
-
-message MaterialsType {
-	repeated MaterialType Material = 1;
-	optional ID _id = 2;
 }
 
 message MetricType {
