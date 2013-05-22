@@ -11,6 +11,7 @@
    <modelVersion>4.0.0</modelVersion>
    <properties>
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <target.java.path>target/generated-sources/java/edu/vanderbilt/isis/meta</target.java.path>
    </properties>
 
   <artifactId>cdb-protobuf</artifactId>
@@ -55,20 +56,20 @@
               <phase>generate-sources</phase>
               <configuration>
                 <tasks>
-                  <mkdir dir="target/generated-sources"/>
+                  <mkdir dir="${target.java.path}"/>
                   <exec executable="protoc">
                     <arg value="--proto_path=src/main/protobuf"/>
-                    <arg value="--java_out=target/generated-sources"/>
+		    <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/CdbMsg.proto"/>
                   </exec>
                   <exec executable="protoc">
                     <arg value="--proto_path=src/main/protobuf"/>
-                    <arg value="--java_out=target/generated-sources"/>
+		    <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/XsdTypes.proto"/>
                   </exec>
                   <exec executable="protoc">
                     <arg value="--proto_path=src/main/protobuf"/>
-                    <arg value="--java_out=target/generated-sources"/>
+		    <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/AssemblyInterface.proto"/>
                   </exec>
                 </tasks>
@@ -83,7 +84,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-	    <version>2.3.2</version>
+            <version>2.3.2</version>
             <configuration>
                 <source>1.6</source>
                 <target>1.6</target>
@@ -96,6 +97,7 @@
             <version>2.4</version>
             <configuration>
                 <classifier>${genClassifier}</classifier>
+    <!--
                 <archive>
                     <index>true</index>
                     <manifest>
@@ -103,6 +105,7 @@
                         <addClasspath>true</addClasspath>
                     </manifest>
                 </archive>
+    -->
             </configuration>
         </plugin>
 
@@ -111,6 +114,21 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>1.7</version>
         <executions>
+           <execution>
+             <id>add-source</id>
+             <phase>generate-sources</phase>
+             <goals> <goal>add-source</goal> </goals>
+             <configuration> 
+               <sources> 
+                 <source>${basedir}/target/generated-sources/java</source>
+               </sources>
+             </configuration>
+           </execution>
+           <execution>
+             <id>parse-version</id>
+             <phase>validate</phase>
+             <goals> <goal>parse-version</goal> </goals>
+          </execution>
           <execution>
 <!-- include the data contract in the build products -->
             <id>attach-artifacts</id>
