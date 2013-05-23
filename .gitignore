@@ -1,6 +1,6 @@
 /pom.xml
 *jar
-*.un~
+*~
 /lib
 /classes
 /native
