@@ -23,7 +23,7 @@ public class DesignFrameEncoder extends MessageToByteEncoder<ByteBuf> {
        
         logger.trace("generate the header");
         ByteBuf headerBuf = Unpooled.buffer(20);
-        ByteBuf headerBufLittleEndian = headerBuf.order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuf headerBufLittleEndian = headerBuf.order(ByteOrder.BIG_ENDIAN);
         headerBufLittleEndian.writeInt(DesignFrameDecoder.MAGIC_NUMBER);       //Magic number
         //headerBufLittleEndian.writeInt(in.length);                       //Data length (not including header)
         //headerBufLittleEndian.writeByte(in.getMessagePriority());     //Message priority

@@ -37,22 +37,22 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 		in.readBytes(header, 0, 20);
 
 		final ByteBuf headerBuf = Unpooled.wrappedBuffer(header);
-		final ByteBuf headerBufLittleEndian = headerBuf
-				.order(ByteOrder.LITTLE_ENDIAN);
+		final ByteBuf headerBufBigEndian = headerBuf
+				.order(ByteOrder.BIG_ENDIAN);
 
-		final int magicNumber = headerBufLittleEndian.readInt();
-		final int size = headerBufLittleEndian.readInt();
+		final int magicNumber = headerBufBigEndian.readInt();
+		final int size = headerBufBigEndian.readInt();
 		
 		@SuppressWarnings("unused")
-		final byte priority = headerBufLittleEndian.readByte();
+		final byte priority = headerBufBigEndian.readByte();
 		@SuppressWarnings("unused")
-		final byte error = headerBufLittleEndian.readByte();
+		final byte error = headerBufBigEndian.readByte();
 		
 		/** two reserved bytes; not used */
-		headerBufLittleEndian.readBytes(2); 
+		headerBufBigEndian.readBytes(2); 
 		
-		final int checksum = headerBufLittleEndian.readInt();
-		final int headerChecksum = headerBufLittleEndian.readInt();
+		final int payloadChecksum = headerBufBigEndian.readInt();
+		final int headerChecksum = headerBufBigEndian.readInt();
 
 		logger.trace("verify header checksum");
 		final CRC32 crc = new CRC32();
@@ -60,12 +60,12 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 		final int expectedChecksum = (int) crc.getValue();
 		if (magicNumber != MAGIC_NUMBER) {
 			logger.error("Magic number mismatch: {} != {} (expected)",
-					magicNumber, MAGIC_NUMBER);
+					Integer.toHexString( magicNumber ), Integer.toHexString( MAGIC_NUMBER ));
 			return;
 		}
 		if (headerChecksum != expectedChecksum) {
 			logger.error("Header checksum mismatch: {} != {} (expected)",
-					expectedChecksum, headerChecksum);
+					Integer.toHexString( headerChecksum ), Integer.toHexString( expectedChecksum ));
 		}
 		
 		if (in.readableBytes() < size) {
@@ -83,9 +83,9 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 		dataCrc.update(data);
 		int expectedDataChecksum = (int) dataCrc.getValue();
 
-		if (checksum != expectedDataChecksum) {
-			logger.error("Data checksum mismatch: {} != {} (expected)",
-					expectedDataChecksum, checksum);
+		if (payloadChecksum != expectedDataChecksum) {
+			logger.error("Payload checksum mismatch: {} != {} (expected)",
+					Integer.toHexString( payloadChecksum ), Integer.toHexString( expectedDataChecksum ));
 		}
 		out.add(Unpooled.wrappedBuffer(data));
 	}
