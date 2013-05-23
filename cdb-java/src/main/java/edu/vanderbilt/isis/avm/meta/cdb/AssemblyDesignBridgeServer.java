@@ -51,7 +51,7 @@ public class AssemblyDesignBridgeServer {
 					.option(ChannelOption.TCP_NODELAY, true)
 					.option(ChannelOption.SO_KEEPALIVE, true);
 
-			final int port = 32445;		
+			final int port = 15150;		
 			final InetSocketAddress isoc = new InetSocketAddress(port);
 
 			logger.info("creating the server socket {}:{}", isoc.getAddress(), port);
