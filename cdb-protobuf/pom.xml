@@ -75,11 +75,11 @@
                     <arg value="src/main/protobuf/AssemblyInterface.proto"/>
                   </exec>
 		  <!-- build the csharp files -->
-                  <exec executable="protogen">
+                  <mkdir dir="${target.csharp.path}"/>
+                  <exec executable="protogen" dir="src/main/protobuf">
                     <arg value="-d"/>
-                    <arg value="--proto_path=src/main/protobuf"/>
-		    <arg value="-o:${target.csharp.path}"/>
-                    <arg value="-i:src/main/protobuf/CdbMsg.proto"/>
+		    <arg value="-o:${basedir}/${target.csharp.path}/CdbMsg.cs"/>
+                    <arg value="-i:CdbMsg.proto"/>
                   </exec>
                 </tasks>
               </configuration>
