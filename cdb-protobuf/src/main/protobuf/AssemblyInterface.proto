@@ -91,11 +91,11 @@ message CADComponentType {
 	optional KinematicConnectionsType KinematicConnections = 3;
 	optional ParametricParametersType ParametricParameters = 4;
 	required string ComponentID = 5;
-	required string MaterialID = 6;
-	required string Name = 7;
-	required string SpecialInstruction = 8;
+	optional string MaterialID = 6;
+	optional string Name = 7;
+	optional string SpecialInstruction = 8;
 	optional bool Standalone = 9;
-	required string Type = 10;
+	optional string Type = 10;
 	optional ID _id = 11;
 }
 
