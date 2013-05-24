@@ -12,6 +12,7 @@
    <properties>
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
      <target.java.path>target/generated-sources/java/</target.java.path>
+     <target.csharp.path>target/generated-sources/csharp/</target.csharp.path>
    </properties>
 
   <artifactId>cdb-protobuf</artifactId>
@@ -56,6 +57,7 @@
               <phase>generate-sources</phase>
               <configuration>
                 <tasks>
+		  <!-- build the java files -->
                   <mkdir dir="${target.java.path}"/>
                   <exec executable="protoc">
                     <arg value="--proto_path=src/main/protobuf"/>
@@ -71,6 +73,13 @@
                     <arg value="--proto_path=src/main/protobuf"/>
 		    <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/AssemblyInterface.proto"/>
+                  </exec>
+		  <!-- build the csharp files -->
+                  <exec executable="protogen">
+                    <arg value="-d"/>
+                    <arg value="--proto_path=src/main/protobuf"/>
+		    <arg value="-o:${target.csharp.path}"/>
+                    <arg value="-i:src/main/protobuf/CdbMsg.proto"/>
                   </exec>
                 </tasks>
               </configuration>
