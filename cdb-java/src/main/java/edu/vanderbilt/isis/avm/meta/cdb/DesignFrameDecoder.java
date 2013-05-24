@@ -22,11 +22,21 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 
     static final int MAGIC_NUMBER = 0xdeadbeef;
     static final byte[] MAGIC_NUMBER_ARRAY;
+
     static {
         final ByteBuffer buff = ByteBuffer.allocate(4);
         buff.order(ByteOrder.BIG_ENDIAN).putInt(MAGIC_NUMBER);
         MAGIC_NUMBER_ARRAY = buff.array();
     }
+
+    private static String toHexString(final byte[] byteArray) {
+        StringBuffer stringBuffer = new StringBuffer("[ ");
+        for (final byte byte_var : byteArray) {
+            stringBuffer.append(String.format("%02X ", byte_var));
+        }
+        return stringBuffer.append("]").toString();
+    }
+
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf in,
@@ -78,7 +88,7 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
             logger.debug("header end position {}", headerEndPos);
             final byte[] header = new byte[headerEndPos - headerStartPos];
             wip.getBytes(headerStartPos, header);
-            logger.debug("raw header {}", header);
+            logger.debug("raw header {}", toHexString(header));
 
             logger.trace("verify header checksum");
             final CRC32 crc = new CRC32();
@@ -91,31 +101,32 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
                         Integer.toHexString(headerChecksum), Integer.toHexString(computedHeaderChecksum));
                 continue;
             }
+            logger.debug("header checksum {}", Integer.toHexString(headerChecksum));
 
             if (wip.readableBytes() < size) {
                 logger.debug("not enough data to continue: {} < {}", wip.readableBytes(), size);
                 return;
             }
 
-            final byte[] data = new byte[size];
-            wip.readBytes(data, 0, size);
-            logger.debug("read data [{}]:{}", size, data);
-            final int payloadChecksum2 = wip.readInt();
+            final byte[] payload = new byte[size];
+            wip.readBytes(payload, 0, size);
+            logger.debug("read payload [{}]:{}", size, toHexString(payload));
+            final int payloadChecksumTrailer = wip.readInt();
+            logger.debug("read payload {}", Integer.toHexString(payloadChecksumTrailer));
 
             final CRC32 dataCrc = new CRC32();
-            dataCrc.update(data);
+            dataCrc.update(payload);
             int computedPayloadChecksum = (int) dataCrc.getValue();
 
-            if (payloadChecksum != computedPayloadChecksum || payloadChecksum != payloadChecksum2) {
+            if (payloadChecksum != computedPayloadChecksum || payloadChecksum != payloadChecksumTrailer) {
                 logger.error("Payload checksum mismatch: passed[{}] computed[{}] trailer[{}])",
                         Integer.toHexString(payloadChecksum),
                         Integer.toHexString(computedPayloadChecksum),
-                        Integer.toHexString(payloadChecksum2));
+                        Integer.toHexString(payloadChecksumTrailer));
             }
 
             in.readerIndex(wip.readerIndex());
-            out.add(Unpooled.wrappedBuffer(data));
-
+            out.add(Unpooled.wrappedBuffer(payload));
         }
     }
 
