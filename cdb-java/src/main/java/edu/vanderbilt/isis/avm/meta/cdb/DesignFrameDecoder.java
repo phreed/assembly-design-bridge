@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
  * This frame decoder scans for the "magic".
  */
 public class DesignFrameDecoder extends ByteToMessageDecoder {
-	private static final Logger logger = LoggerFactory
-			.getLogger(DesignFrameDecoder.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(DesignFrameDecoder.class);
 
     static final int MAGIC_NUMBER = 0xdeadbeef;
     static final byte[] MAGIC_NUMBER_ARRAY;
