@@ -6,6 +6,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.zip.CRC32;
 
@@ -13,81 +14,109 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * This frame decoder scans for the "magic".
  */
 public class DesignFrameDecoder extends ByteToMessageDecoder {
-	private static final Logger logger = LoggerFactory
-			.getLogger(DesignFrameDecoder.class);
-	static final int MAGIC_NUMBER = 0xdeadbeef;
+    private static final Logger logger = LoggerFactory
+            .getLogger(DesignFrameDecoder.class);
 
-	@Override
-	protected void decode(ChannelHandlerContext arg0, ByteBuf in,
-			MessageBuf<Object> out) throws Exception {
+    static final int MAGIC_NUMBER = 0xdeadbeef;
+    static final byte[] MAGIC_NUMBER_ARRAY;
+    static {
+        final ByteBuffer buff = ByteBuffer.allocate(4);
+        buff.order(ByteOrder.BIG_ENDIAN).putInt(MAGIC_NUMBER);
+        MAGIC_NUMBER_ARRAY = buff.array();
+    }
 
-		if (in.readableBytes() < 20) {
-			logger.debug("haven't gotten a full header yet {}",
-					in.readableBytes());
-			return;
-		}
+    @Override
+    protected void decode(ChannelHandlerContext context, ByteBuf in,
+                          MessageBuf<Object> out) throws Exception {
+        logger.debug("top {}", in);
+        if (in.readableBytes() < 20) {
+            logger.debug("not a full header yet, only {} bytes of {}",
+                    in.readableBytes(), in.capacity());
+            return;
+        }
+        logger.debug("looking for magic");
+        while (0 < in.readableBytes()) {
+            if (in.getByte(in.readerIndex()) != MAGIC_NUMBER_ARRAY[0]) {
+                final byte notMagic = in.readByte();
+                logger.debug("not magic {}", String.format("%02X ", notMagic));
+                continue;
+            }
+            final ByteBuf wip = in.order(ByteOrder.BIG_ENDIAN);
+            if (wip.readableBytes() < 20) {
+                logger.debug("not even a full header yet, only {}:{} bytes",
+                        in.readableBytes(), wip.readableBytes());
+                return;
+            }
+            final int headerStartPos = wip.readerIndex();
+            logger.debug("header start position {}", headerStartPos);
 
-		in.markReaderIndex();
+            final int magicNumber = wip.readInt();
+            if (magicNumber != MAGIC_NUMBER) {
+                logger.error("Magic number mismatch: {} != {} (expected)",
+                        Integer.toHexString(magicNumber), Integer.toHexString(MAGIC_NUMBER));
+                continue;
+            }
+            logger.trace("skip the magic");
+            in.readerIndex(wip.readerIndex());
 
-		final byte[] header = new byte[20];
+            final int size = wip.readInt();
 
-		in.readBytes(header, 0, 20);
+            @SuppressWarnings("unused")
+            final byte priority = wip.readByte();
+            @SuppressWarnings("unused")
+            final byte error = wip.readByte();
 
-		final ByteBuf headerBuf = Unpooled.wrappedBuffer(header);
-		final ByteBuf headerBufBigEndian = headerBuf
-				.order(ByteOrder.BIG_ENDIAN);
+            /** two reserved bytes; not used */
+            wip.readBytes(2);
 
-		final int magicNumber = headerBufBigEndian.readInt();
-		final int size = headerBufBigEndian.readInt();
-		
-		@SuppressWarnings("unused")
-		final byte priority = headerBufBigEndian.readByte();
-		@SuppressWarnings("unused")
-		final byte error = headerBufBigEndian.readByte();
-		
-		/** two reserved bytes; not used */
-		headerBufBigEndian.readBytes(2); 
-		
-		final int payloadChecksum = headerBufBigEndian.readInt();
-		final int headerChecksum = headerBufBigEndian.readInt();
+            final int payloadChecksum = wip.readInt();
 
-		logger.trace("verify header checksum");
-		final CRC32 crc = new CRC32();
-		crc.update(header, 0, 16);
-		final int expectedChecksum = (int) crc.getValue();
-		if (magicNumber != MAGIC_NUMBER) {
-			logger.error("Magic number mismatch: {} != {} (expected)",
-					Integer.toHexString( magicNumber ), Integer.toHexString( MAGIC_NUMBER ));
-			return;
-		}
-		if (headerChecksum != expectedChecksum) {
-			logger.error("Header checksum mismatch: {} != {} (expected)",
-					Integer.toHexString( headerChecksum ), Integer.toHexString( expectedChecksum ));
-		}
-		
-		if (in.readableBytes() < size) {
-			logger.debug("not enough data to continue: {} < {}", in.readableBytes(), size);
-			in.resetReaderIndex();
-			return;
-		}
+            final int headerEndPos = wip.readerIndex();
+            logger.debug("header end position {}", headerEndPos);
+            final byte[] header = new byte[headerEndPos - headerStartPos];
+            wip.getBytes(headerStartPos, header);
+            logger.debug("raw header {}", header);
 
-		final byte[] data = new byte[size];
+            logger.trace("verify header checksum");
+            final CRC32 crc = new CRC32();
+            crc.update(header, 0, header.length);
+            final int computedHeaderChecksum = (int) crc.getValue();
 
-		in.readBytes(data, 0, size);
-		logger.debug("Read data {}", size);
+            final int headerChecksum = wip.readInt();
+            if (headerChecksum != computedHeaderChecksum) {
+                logger.error("Header checksum mismatch: {} (passed) != {} (computed)",
+                        Integer.toHexString(headerChecksum), Integer.toHexString(computedHeaderChecksum));
+                continue;
+            }
 
-		final CRC32 dataCrc = new CRC32();
-		dataCrc.update(data);
-		int expectedDataChecksum = (int) dataCrc.getValue();
+            if (wip.readableBytes() < size) {
+                logger.debug("not enough data to continue: {} < {}", wip.readableBytes(), size);
+                return;
+            }
 
-		if (payloadChecksum != expectedDataChecksum) {
-			logger.error("Payload checksum mismatch: {} != {} (expected)",
-					Integer.toHexString( payloadChecksum ), Integer.toHexString( expectedDataChecksum ));
-		}
-		out.add(Unpooled.wrappedBuffer(data));
-	}
+            final byte[] data = new byte[size];
+            wip.readBytes(data, 0, size);
+            logger.debug("read data [{}]:{}", size, data);
+            final int payloadChecksum2 = wip.readInt();
+
+            final CRC32 dataCrc = new CRC32();
+            dataCrc.update(data);
+            int computedPayloadChecksum = (int) dataCrc.getValue();
+
+            if (payloadChecksum != computedPayloadChecksum || payloadChecksum != payloadChecksum2) {
+                logger.error("Payload checksum mismatch: passed[{}] computed[{}] trailer[{}])",
+                        Integer.toHexString(payloadChecksum),
+                        Integer.toHexString(computedPayloadChecksum),
+                        Integer.toHexString(payloadChecksum2));
+            }
+
+            in.readerIndex(wip.readerIndex());
+            out.add(Unpooled.wrappedBuffer(data));
+
+        }
+    }
 
 }
