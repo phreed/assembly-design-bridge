@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?udm interface="AssemblyInterface" version="1.2.0.0"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
- targetNamespace="http://isis.vanderbilt.edu/meta"
- xmlns="http://isis.vanderbilt.edu/meta"
  elementFormDefault="qualified" 
 >
 <!-- generated on Wed Apr 24 17:22:17 2013 -->
 
-
-	<xsd:complexType name="KinematicFeatureType">
-		<xsd:attribute name="DatumName" type="xsd:string" use="required"/>
-		<xsd:attribute name="ComponentID" type="xsd:string" use="required"/>
-		<xsd:attribute name="FeatureGeometryType" type="xsd:string" use="required"/>
-		<xsd:attribute name="_id" type="xsd:ID"/>
-	</xsd:complexType>
 
 	<xsd:complexType name="MassType">
 		<xsd:attribute name="ComponentID" type="xsd:string" use="required"/>
@@ -53,6 +44,13 @@
 		<xsd:attribute name="FeatureInterfaceType" type="xsd:string" use="required"/>
 		<xsd:attribute name="ERP" type="xsd:double" use="required"/>
 		<xsd:attribute name="CFM" type="xsd:double" use="required"/>
+		<xsd:attribute name="_id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="KinematicFeatureType">
+		<xsd:attribute name="DatumName" type="xsd:string" use="required"/>
+		<xsd:attribute name="ComponentID" type="xsd:string" use="required"/>
+		<xsd:attribute name="FeatureGeometryType" type="xsd:string" use="required"/>
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
 
@@ -424,7 +422,6 @@
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
 
-<!--
 	<xsd:complexType name="MaterialsType">
 		<xsd:sequence>
 			<xsd:element name="Material" type="MaterialType" maxOccurs="unbounded"/>
@@ -445,10 +442,9 @@
 		</xsd:sequence>
 		<xsd:attribute name="MaterialName" type="xsd:string" use="required"/>
 		<xsd:attribute name="MaterialID" type="xsd:string" use="required"/>
-		<xsd:attribute name="MaterialType" type="xsd:string" use="required"/>
+		<xsd:attribute name="Type" type="xsd:string" use="required"/>
 		<xsd:attribute name="_id" type="xsd:ID"/>
 	</xsd:complexType>
--->
 
 	<xsd:complexType name="AnalysesType">
 		<xsd:sequence>
@@ -464,9 +460,7 @@
 		<xsd:sequence>
 			<xsd:element name="Assembly" type="AssemblyType" minOccurs="0" maxOccurs="unbounded"/>
 			<xsd:element name="DataExchange" type="DataExchangeType" minOccurs="0"/>
-<!--
 			<xsd:element name="Materials" type="MaterialsType" minOccurs="0" maxOccurs="unbounded"/>
--->
 			<xsd:element name="UnassembledComponents" type="UnassembledComponentsType" minOccurs="0"/>
 			<xsd:element name="Assemblies" type="AssembliesType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
@@ -502,8 +496,8 @@
 
 	<xsd:complexType name="PairType">
 		<xsd:sequence>
-			<xsd:element name="ConstraintFeature_A" type="ConstraintFeatureType" />
-			<xsd:element name="ConstraintFeature_B" type="ConstraintFeatureType" />
+			<xsd:element name="ConstraintFeatureA" type="ConstraintFeatureType"/>
+			<xsd:element name="ConstraintFeatureB" type="ConstraintFeatureType"/>
 			<xsd:element name="ConstraintOffset" type="ConstraintOffsetType" minOccurs="0"/>
 		</xsd:sequence>
 		<xsd:attribute name="FeatureInterfaceType" type="xsd:string" use="required"/>

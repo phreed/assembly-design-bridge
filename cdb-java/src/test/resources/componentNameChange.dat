@@ -1,0 +1,14 @@
+15:28:39.298 [nioEventLoopGroup-2-1] DEBUG e.v.i.a.meta.cdb.DesignFrameDecoder - top PooledUnsafeDirectByteBuf(ridx: 0, widx: 85, cap: 4096)
+15:28:39.298 [nioEventLoopGroup-2-1] DEBUG e.v.i.a.meta.cdb.DesignFrameDecoder - looking for magic
+15:28:39.298 [nioEventLoopGroup-2-1] DEBUG e.v.i.a.meta.cdb.DesignFrameDecoder - header start position 0
+15:28:39.298 [nioEventLoopGroup-2-1] DEBUG e.v.i.a.meta.cdb.DesignFrameDecoder - header end position 16
+15:28:39.298 [nioEventLoopGroup-2-1] DEBUG e.v.i.a.meta.cdb.DesignFrameDecoder - raw header [-34, -83, -66, -17, 0, 0, 0, 61, 0, 0, 0, 0, 124, -106, 21, 102]
+15:28:39.299 [nioEventLoopGroup-2-1] DEBUG e.v.i.a.meta.cdb.DesignFrameDecoder - read data [61]:[8, 1, 50, 57, 42, 38, 123, 98, 100, 100, 48, 48, 56, 99, 52, 45, 52, 49, 52, 57, 45, 52, 48, 97, 98, 45, 97, 54, 57, 56, 45, 48, 101, 56, 52, 97, 98, 48, 48, 97, 102, 100, 51, 125, 58, 15, 70, 117, 101, 108, 84, 97, 110, 107, 49, 50, 51, 52, 53, 54, 55]
+15:28:39.473 [nioEventLoopGroup-2-1] DEBUG i.n.channel.DefaultChannelPipeline - Discarded inbound message type: UPDATE
+cadComponent {
+  ComponentID: "{bdd008c4-4149-40ab-a698-0e84ab00afd3}"
+  Name: "FuelTank1234567"
+}
+ that reached at the tail of the pipeline. Please check your pipeline configuration.
+15:28:39.474 [nioEventLoopGroup-2-1] WARN  i.n.channel.DefaultChannelPipeline - Discarded 1 inbound message(s) that reached at the tail of the pipeline. Please check your pipeline configuration.
+

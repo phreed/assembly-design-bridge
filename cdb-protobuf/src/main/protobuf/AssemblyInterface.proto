@@ -41,10 +41,11 @@ message AnalysisConstraintsType {
 message AssembliesType {
 	repeated AssemblyType Assembly = 1;
 	optional DataExchangeType DataExchange = 2;
-	optional UnassembledComponentsType UnassembledComponents = 3;
-	repeated AssembliesType Assemblies = 4;
-	required string VersionInfo = 5;
-	optional ID _id = 6;
+	repeated MaterialsType Materials = 3;
+	optional UnassembledComponentsType UnassembledComponents = 4;
+	repeated AssembliesType Assemblies = 5;
+	required string VersionInfo = 6;
+	optional ID _id = 7;
 }
 
 message AssemblyType {
@@ -90,11 +91,11 @@ message CADComponentType {
 	optional KinematicConnectionsType KinematicConnections = 3;
 	optional ParametricParametersType ParametricParameters = 4;
 	required string ComponentID = 5;
-	required string MaterialID = 6;
-	required string Name = 7;
-	required string SpecialInstruction = 8;
+	optional string MaterialID = 6;
+	optional string Name = 7;
+	optional string SpecialInstruction = 8;
 	optional bool Standalone = 9;
-	required string Type = 10;
+	optional string Type = 10;
 	optional ID _id = 11;
 }
 
@@ -270,6 +271,26 @@ message MassType {
 	optional ID _id = 4;
 }
 
+message MaterialPropertyType {
+	required string PropertyName = 1;
+	required string Units = 2;
+	required double Value = 3;
+	optional ID _id = 4;
+}
+
+message MaterialType {
+	repeated MaterialPropertyType MaterialProperty = 1;
+	required string MaterialID = 2;
+	required string MaterialName = 3;
+	required string Type = 4;
+	optional ID _id = 5;
+}
+
+message MaterialsType {
+	repeated MaterialType Material = 1;
+	optional ID _id = 2;
+}
+
 message MetricType {
 	required string ID = 1;
 	required string Type = 2;
@@ -290,8 +311,8 @@ message MomentType {
 }
 
 message PairType {
-	required ConstraintFeatureType ConstraintFeature_A = 1;
-	required ConstraintFeatureType ConstraintFeature_B = 2;
+	required ConstraintFeatureType ConstraintFeatureA = 1;
+	required ConstraintFeatureType ConstraintFeatureB = 2;
 	optional ConstraintOffsetType ConstraintOffset = 3;
 	required string FeatureAlignmentType = 4;
 	required string FeatureGeometryType = 5;

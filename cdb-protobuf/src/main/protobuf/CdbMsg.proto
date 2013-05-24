@@ -27,8 +27,10 @@ message Message {
     required MessageType type = 1;
 
     optional ID _id = 2;
-    optional AssembliesType assemblies = 3;
-    repeated Notice notices = 4;
+    repeated Notice notices = 3;
+    optional string xml = 4;
+    optional AssembliesType assemblies = 5;
+    optional CADComponentType cadComponent = 6;
 }
 
 /**
