@@ -20,6 +20,14 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 			.getLogger(DesignFrameDecoder.class);
 	static final int MAGIC_NUMBER = 0xdeadbeef;
 
+	private String toHexString( byte[] byteArray) {
+		StringBuffer stringBuffer = new StringBuffer();
+		for( byte byte_var : byteArray ) {
+			stringBuffer.append( Integer.toHexString( byte_var ) );
+		}
+		return stringBuffer.toString();
+	}
+	
 	@Override
 	protected void decode(ChannelHandlerContext arg0, ByteBuf in,
 			MessageBuf<Object> out) throws Exception {
@@ -62,10 +70,16 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 			logger.error("Magic number mismatch: {} != {} (expected)",
 					Integer.toHexString( magicNumber ), Integer.toHexString( MAGIC_NUMBER ));
 			return;
+		} else {
+			logger.debug("Got magic number {}",
+					Integer.toHexString( magicNumber ));			
 		}
 		if (headerChecksum != expectedChecksum) {
 			logger.error("Header checksum mismatch: {} != {} (expected)",
 					Integer.toHexString( headerChecksum ), Integer.toHexString( expectedChecksum ));
+		} else {
+			logger.debug("Got header checksum {}",
+					Integer.toHexString( headerChecksum ));			
 		}
 		
 		if (in.readableBytes() < size) {
@@ -86,8 +100,14 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 		if (payloadChecksum != expectedDataChecksum) {
 			logger.error("Payload checksum mismatch: {} != {} (expected)",
 					Integer.toHexString( payloadChecksum ), Integer.toHexString( expectedDataChecksum ));
+		} else {
+			logger.debug("Got payload checksum {}",
+					Integer.toHexString( payloadChecksum ));			
 		}
 		out.add(Unpooled.wrappedBuffer(data));
+		logger.debug("Payload is as follows: {}", toHexString(data));
+		
+
 	}
 
 }
