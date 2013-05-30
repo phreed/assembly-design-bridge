@@ -16,3 +16,4 @@ test-output
 .externalToolBuilders
 *~
 dependency-reduced-pom.xml
+*.swp

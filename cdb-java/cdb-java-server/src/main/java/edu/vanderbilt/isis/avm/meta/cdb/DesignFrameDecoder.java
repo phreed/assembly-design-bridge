@@ -1,10 +1,12 @@
 package edu.vanderbilt.isis.avm.meta.cdb;
 
+import ch.qos.logback.core.encoder.ByteArrayUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.buffer.BufUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -28,15 +30,6 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
         buff.order(ByteOrder.BIG_ENDIAN).putInt(MAGIC_NUMBER);
         MAGIC_NUMBER_ARRAY = buff.array();
     }
-
-    private static String toHexString(final byte[] byteArray) {
-        StringBuffer stringBuffer = new StringBuffer("[ ");
-        for (final byte byte_var : byteArray) {
-            stringBuffer.append(String.format("%02X ", byte_var));
-        }
-        return stringBuffer.append("]").toString();
-    }
-
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf in,
@@ -84,11 +77,11 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 
             final int payloadChecksum = wip.readInt();
 
-            final int headerEndPos = wip.readerIndex();
-            logger.debug("header end position {}", headerEndPos);
-            final byte[] header = new byte[headerEndPos - headerStartPos];
+            final int headerLength = wip.readerIndex() - headerStartPos;
+            logger.debug("header length {}", headerLength);
+            final byte[] header = new byte[headerLength];
             wip.getBytes(headerStartPos, header);
-            logger.debug("raw header {}", toHexString(header));
+            logger.debug("raw header {}", BufUtil.hexDump(wip, headerStartPos, headerLength));
 
             logger.trace("verify header checksum");
             final CRC32 crc = new CRC32();
@@ -110,7 +103,7 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 
             final byte[] payload = new byte[size];
             wip.readBytes(payload, 0, size);
-            logger.debug("read payload [{}]:{}", size, toHexString(payload));
+            logger.debug("payload [{}]:{}", size, BufUtil.hexDump(wip, 0, size));
             final int payloadChecksumTrailer = wip.readInt();
             logger.debug("read payload {}", Integer.toHexString(payloadChecksumTrailer));
 
