@@ -40,7 +40,7 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
                     in.readableBytes(), in.capacity());
             return;
         }
-        logger.debug("looking for magic");
+        logger.debug("looking for magic in {}", BufUtil.hexDump(in));
         while (0 < in.readableBytes()) {
             if (in.getByte(in.readerIndex()) != MAGIC_NUMBER_ARRAY[0]) {
                 final byte notMagic = in.readByte();

@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>edu.vanderbilt.isis.avm.meta.cdb</groupId>
-	<artifactId>meta-cdb-java</artifactId>
+	<artifactId>java-parent</artifactId>
 	<version>1.0.0</version>
-	<name>meta-cdb-java</name>
+	<name>META CDB java parent</name>
 	<packaging>pom</packaging>
 
 	<prerequisites>
@@ -19,9 +19,10 @@
 	</properties>
 
 	<modules>
-		<module>cdb-java-server</module>
-		<module>cdb-java-client</module>
-	</modules>
+		<module>java-library</module>
+		<module>java-server</module>
+		<module>java-client</module>
+        </modules>
 
 	<dependencyManagement>
 	<dependencies>

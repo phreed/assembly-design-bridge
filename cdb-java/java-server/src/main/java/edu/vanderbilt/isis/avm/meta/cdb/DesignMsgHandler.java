@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
      @Override
       public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
          cause.printStackTrace();
-         logger.warn("exception caught");
+         logger.warn("exception caught", cause);
          ctx.close();
       }
 

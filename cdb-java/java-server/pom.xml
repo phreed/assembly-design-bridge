@@ -5,11 +5,11 @@
 
 	<parent>
 		<groupId>edu.vanderbilt.isis.avm.meta.cdb</groupId>
-			<artifactId>meta-cdb-java</artifactId>
+		<artifactId>java-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>meta-cdb-java-server</artifactId>
-	<name>META cdb-java-server</name>
+	<artifactId>java-server</artifactId>
+	<name>META CDB java server</name>
 	<packaging>jar</packaging>
 
 
@@ -43,6 +43,11 @@
 		      <artifactId>cdb-protobuf</artifactId>
 		      <classifier>protoc25</classifier>
 		      <scope>compile</scope>
+                </dependency>
+		<dependency>
+		      <groupId>edu.vanderbilt.isis.meta</groupId>
+		      <artifactId>java-library</artifactId>
+		      <version>1.0.0</version>
                 </dependency>
 
 	</dependencies>
