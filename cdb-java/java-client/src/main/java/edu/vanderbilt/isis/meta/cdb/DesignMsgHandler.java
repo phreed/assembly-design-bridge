@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.meta.cdb.client;
+package edu.vanderbilt.isis.meta.cdb;
 
 import io.netty.buffer.BufUtil;
 import io.netty.buffer.ByteBuf;

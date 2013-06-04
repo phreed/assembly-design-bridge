@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.meta.cdb.client;
+package edu.vanderbilt.isis.meta.cdb;
 
 import java.net.InetSocketAddress;
 
@@ -72,7 +72,7 @@ public class AssemblyDesignBridgeClient {
     }
 
 	public static void main(String[] args) throws Exception {
-		logger.info("starting client");
+		logger.info("starting edu.vanderbilt.isis.meta.cdb");
 		if (args.length != 2) {
             logger.error("Usage: {} <port>", AssemblyDesignBridgeClient.class.getSimpleName());
             new AssemblyDesignBridgeClient().start();
