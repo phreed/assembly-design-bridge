@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>edu.vanderbilt.isis.avm.meta.cdb</groupId>
-		<artifactId>java-parent</artifactId>
+		<groupId>edu.vanderbilt.isis.meta</groupId>
+		<artifactId>cdb-java-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>java-library</artifactId>
+	<artifactId>cdb-java-library</artifactId>
 	<name>META CDB java library</name>
 	<packaging>jar</packaging>
 
@@ -22,20 +22,14 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		        <scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-		</dependency>
-		<dependency>
-		      <groupId>edu.vanderbilt.isis.meta</groupId>
-		      <artifactId>cdb-protobuf</artifactId>
-		      <classifier>protoc25</classifier>
-		      <scope>compile</scope>
-                </dependency>
-
 	</dependencies>
 
 	<build>

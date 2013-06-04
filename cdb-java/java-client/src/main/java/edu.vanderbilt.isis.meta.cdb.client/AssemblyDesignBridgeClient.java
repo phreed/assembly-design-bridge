@@ -1,8 +1,8 @@
-package edu.vanderbilt.isis.avm.meta.cdb;
+package edu.vanderbilt.isis.meta.cdb.client;
 
 import java.net.InetSocketAddress;
 
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -13,29 +13,34 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import edu.vanderbilt.isis.meta.cdb.DesignFrameDecoder;
+import edu.vanderbilt.isis.meta.cdb.DesignFrameEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.vanderbilt.isis.meta.CdbMsg;
 
-public class AssemblyDesignBridgeServer {
+public class AssemblyDesignBridgeClient {
 	private static final Logger logger = LoggerFactory
-			.getLogger(AssemblyDesignBridgeServer.class);
+			.getLogger(AssemblyDesignBridgeClient.class);
 
+    private final String host;
     private final int port;
 
-    public AssemblyDesignBridgeServer( final int port ) {
+    public AssemblyDesignBridgeClient( final String host, final int port ) {
+        this.host = host;
         this.port = port;
     }
-    public AssemblyDesignBridgeServer() {
-        this(15150);
+
+    public AssemblyDesignBridgeClient() {
+        this("localhost",15150);
     }
 
     public void start() throws Exception {
-        final ServerBootstrap boot = new ServerBootstrap();
+        final Bootstrap boot = new Bootstrap();
         final EventLoopGroup bossGroup = new NioEventLoopGroup();
-        final EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final InetSocketAddress address = new InetSocketAddress(this.host, this.port);
 
         try {
             final ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
@@ -47,40 +52,34 @@ public class AssemblyDesignBridgeServer {
                     pipe.addLast("protobufDecoder",
                             new ProtobufDecoder(CdbMsg.Message.getDefaultInstance()));
 
-                    pipe.addLast("distributor",	new DesignMsgHandler());
-
                     pipe.addLast("frameEncoder",	new DesignFrameEncoder());
                     pipe.addLast("protobufEncoder", new ProtobufEncoder());
                 }
             };
 
-            boot.group(bossGroup, workerGroup)
+            boot.group(bossGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(initializer)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true);
+                    .remoteAddress(address)
+                    .handler(initializer);
 
-            final InetSocketAddress isoc = new InetSocketAddress(this.port);
-
-            logger.info("creating the server socket {}:{}", isoc.getAddress(), this.port);
-            final ChannelFuture future = boot.bind(isoc).sync();
-            logger.info("{} started and listening on {}", AssemblyDesignBridgeServer.class.getCanonicalName(),
+            final ChannelFuture future = boot.connect().sync();
+            logger.info("{} started and listening on {}", AssemblyDesignBridgeClient.class.getCanonicalName(),
                     future.channel().localAddress()) ;
             future.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
         }
     }
 
 	public static void main(String[] args) throws Exception {
-		logger.info("starting server");
-		if (args.length != 1) {
-            logger.error("Usage: {} <port>", AssemblyDesignBridgeServer.class.getSimpleName());
-            new AssemblyDesignBridgeServer().start();
+		logger.info("starting client");
+		if (args.length != 2) {
+            logger.error("Usage: {} <port>", AssemblyDesignBridgeClient.class.getSimpleName());
+            new AssemblyDesignBridgeClient().start();
             return;
         }
-        final int port = Integer.parseInt(args[0]);
-        new AssemblyDesignBridgeServer(port).start();
+        final String host = args[0];
+        final int port = Integer.parseInt(args[1]);
+        new AssemblyDesignBridgeClient(host, port).start();
 	}
 }

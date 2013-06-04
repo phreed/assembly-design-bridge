@@ -1,6 +1,8 @@
-package edu.vanderbilt.isis.avm.meta.cdb.client;
+package edu.vanderbilt.isis.meta.cdb.client;
 
+import io.netty.buffer.BufUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 
@@ -11,6 +13,11 @@ import org.slf4j.LoggerFactory;
 
 // @Sharable
 public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBuf> {
+    @Override
+    public void messageReceived(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeClient.class);
 
@@ -28,23 +35,6 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBu
         cause.printStackTrace();
         logger.warn("exception caught", cause);
         ctx.close();
-    }
-
-    /**
-     * Called each time data is received from the server.
-     * It should be noted that the bytes might be fragmented.
-     * Fragmenting implies that, for example, if the server writes 5 bytes it is not guarantee that all 5 bytes will be received at once.
-     * If could be that for 5 bytes this method could be called twice (or more).
-     * The first time it may be called with 3 bytes and the second time with 2 bytes.
-     * The only guarantee is that the bytes will be received in the same order as they are sent.
-     *
-     * @param ctx
-     * @param in
-     */
-    @Override
-    public void inboundBufferUpdated(ChannelHandlerContext ctx, ByteBuf in) {
-        logger.info("client received: {}",
-                BufUtil.hexDump(in.readableBytes(in.readableBytes())));
     }
 
     /**

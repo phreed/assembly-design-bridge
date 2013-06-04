@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>edu.vanderbilt.isis.avm.meta.cdb</groupId>
-		<artifactId>java-parent</artifactId>
+		<groupId>edu.vanderbilt.isis.meta</groupId>
+		<artifactId>cdb-java-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>java-server</artifactId>
+	<artifactId>cdb-java-server</artifactId>
 	<name>META CDB java server</name>
 	<packaging>jar</packaging>
 
 
 	<properties>
-		<main.class>edu.vanderbilt.isis.avm.meta.cdb.AssemblyDesignBridgeServer</main.class>
+		<main.class>edu.vanderbilt.isis.meta.cdb.AssemblyDesignBridgeServer</main.class>
 	</properties>
 
 	<dependencies>
@@ -46,7 +46,7 @@
                 </dependency>
 		<dependency>
 		      <groupId>edu.vanderbilt.isis.meta</groupId>
-		      <artifactId>java-library</artifactId>
+		      <artifactId>cdb-java-library</artifactId>
 		      <version>1.0.0</version>
                 </dependency>
 

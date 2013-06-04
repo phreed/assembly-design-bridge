@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.avm.meta.cdb;
+package edu.vanderbilt.isis.meta.cdb;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,8 +22,8 @@ public class DesignFrameEncoder extends MessageToByteEncoder<ByteBuf> {
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf in, ByteBuf out) throws Exception {
        
         logger.trace("generate the header");
-        ByteBuf headerBuf = Unpooled.buffer(20);
-        ByteBuf headerBufLittleEndian = headerBuf.order(ByteOrder.BIG_ENDIAN);
+        final ByteBuf headerBuf = Unpooled.buffer(20);
+        final ByteBuf headerBufLittleEndian = headerBuf.order(ByteOrder.BIG_ENDIAN);
         headerBufLittleEndian.writeInt(DesignFrameDecoder.MAGIC_NUMBER);       //Magic number
         //headerBufLittleEndian.writeInt(in.length);                       //Data length (not including header)
         //headerBufLittleEndian.writeByte(in.getMessagePriority());     //Message priority
@@ -31,11 +31,11 @@ public class DesignFrameEncoder extends MessageToByteEncoder<ByteBuf> {
         headerBufLittleEndian.writeByte(0);                                       //Reserved byte
         headerBufLittleEndian.writeByte(0);                                       //Reserved byte
 
-        CRC32 dataCrc = new CRC32();
+        final CRC32 dataCrc = new CRC32();
         //dataCrc.update(messageData);
         headerBufLittleEndian.writeInt((int) dataCrc.getValue());                 //Data CRC32
 
-        CRC32 headerCrc = new CRC32();
+        final CRC32 headerCrc = new CRC32();
         headerCrc.update(headerBufLittleEndian.array(), 0, 16);
         headerBufLittleEndian.writeInt((int) headerCrc.getValue());               //Header CRC32 (all 16 bytes of the header, not including itself)
 

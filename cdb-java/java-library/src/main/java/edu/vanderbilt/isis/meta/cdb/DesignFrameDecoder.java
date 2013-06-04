@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.avm.meta.cdb;
+package edu.vanderbilt.isis.meta.cdb;
 
 import ch.qos.logback.core.encoder.ByteArrayUtil;
 import io.netty.buffer.ByteBuf;

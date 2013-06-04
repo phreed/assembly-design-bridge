@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.avm.meta.cdb;
+package edu.vanderbilt.isis.meta.cdb;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
