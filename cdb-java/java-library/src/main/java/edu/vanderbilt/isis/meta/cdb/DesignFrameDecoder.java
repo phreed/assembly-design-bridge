@@ -19,9 +19,6 @@ import org.slf4j.LoggerFactory;
  * This frame decoder scans for the "magic".
  */
 public class DesignFrameDecoder extends ByteToMessageDecoder {
-    private static final Logger logger = LoggerFactory
-            .getLogger(DesignFrameDecoder.class);
-
     static final int MAGIC_NUMBER = 0xdeadbeef;
     static final byte[] MAGIC_NUMBER_ARRAY;
 
@@ -30,6 +27,9 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
         buff.order(ByteOrder.BIG_ENDIAN).putInt(MAGIC_NUMBER);
         MAGIC_NUMBER_ARRAY = buff.array();
     }
+
+    private static final Logger logger = LoggerFactory
+            .getLogger(DesignFrameDecoder.class);
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf in,

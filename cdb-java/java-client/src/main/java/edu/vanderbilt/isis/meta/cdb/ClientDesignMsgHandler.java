@@ -12,20 +12,19 @@ import org.slf4j.LoggerFactory;
 
 
 // @Sharable
-public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBuf> {
-    @Override
-    public void messageReceived(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
+public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBuf> {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeClient.class);
-
     private final static ByteBuf MSG = Unpooled.copiedBuffer("CDB Client", CharsetUtil.UTF_8);
 
+    @Override
+    public void messageReceived(ChannelHandlerContext channelHandlerContext, ByteBuf in) throws Exception {
+        logger.info("message received {}", BufUtil.hexDump(in));
+    }
+
     /**
-     *  This method is called when there is a problem.
-     *  The Throwable is logged and the Channel is closed, which means the connection to the server is closed.
+     * This method is called when there is a problem.
+     * The Throwable is logged and the Channel is closed, which means the connection to the server is closed.
      *
      * @param ctx
      * @param cause
@@ -47,7 +46,7 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBu
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-
+        logger.info("generating sample message {}", MSG);
         ctx.write(MSG.duplicate());
     }
 
@@ -58,6 +57,7 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBu
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+        logger.warn("channel closed {}", ctx);
     }
 
 }

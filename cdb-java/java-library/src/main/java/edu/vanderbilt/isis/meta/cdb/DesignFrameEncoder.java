@@ -15,12 +15,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class DesignFrameEncoder extends MessageToByteEncoder<ByteBuf> {
-	private static final Logger logger = LoggerFactory
-			.getLogger(DesignFrameEncoder.class);
-	
+    private static final Logger logger = LoggerFactory
+            .getLogger(DesignFrameEncoder.class);
+
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf in, ByteBuf out) throws Exception {
-       
+
         logger.trace("generate the header");
         final ByteBuf headerBuf = Unpooled.buffer(20);
         final ByteBuf headerBufLittleEndian = headerBuf.order(ByteOrder.BIG_ENDIAN);
