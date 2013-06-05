@@ -22,13 +22,15 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, CdbMsg.Message req) {
-        logger.debug("handling {}", req);
+        logger.debug("handling \n{}", req);
+        DesignMsgDistributor.INSTANCE.send(ctx, req);
+        /*
         final CdbMsg.Message res = CdbMsg.Message.newBuilder()
                 .setType(req.getType())
                 .setCadComponent(req.getCadComponent())
                 .build();
-        logger.debug("handling {}", req);
         ctx.write(res);
+        */
     }
 
     /**

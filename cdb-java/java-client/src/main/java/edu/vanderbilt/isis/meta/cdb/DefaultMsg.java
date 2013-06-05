@@ -32,20 +32,15 @@ public enum DefaultMsg {
         .build();
     }
 
-    /*
-    public byte[] asByteArray() {
-        try {
-            return TextFormat.print(this.payload);
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("bad message {}", ex);
-        }
-        return null;
-    }
 
     public String asString() {
-        return this.payload;
+        return "type: UPDATE\n" +
+                "cadComponent {\n" +
+                "  ComponentID: \"{bdd0008c4-4149-40ab-a6980e84ab00afd3}\"\n" +
+                "  Name: \"FuelTank12345\"\n" +
+                "}" ;
     }
-    */
+
 
     public CdbMsg.Message asMessage() {
               return this.payload;
