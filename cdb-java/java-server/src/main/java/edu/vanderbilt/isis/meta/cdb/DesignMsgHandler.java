@@ -1,5 +1,6 @@
 package edu.vanderbilt.isis.meta.cdb;
 
+import edu.vanderbilt.isis.meta.CdbMsg;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
@@ -8,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBuf> {
+public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Message> {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeServer.class);
 
@@ -20,16 +21,14 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBu
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, ByteBuf in) {
-
-        while (in.isReadable()) {
-            final int cnt = in.readableBytes();
-            final byte[] data = new byte[cnt];
-            in.readBytes(data);
-            logger.debug("in : {}", data);
-
-            DesignMsgDistributor.INSTANCE.send(ctx, data);
-        }
+    public void messageReceived(ChannelHandlerContext ctx, CdbMsg.Message req) {
+        logger.debug("handling {}", req);
+        final CdbMsg.Message res = CdbMsg.Message.newBuilder()
+                .setType(req.getType())
+                .setCadComponent(req.getCadComponent())
+                .build();
+        logger.debug("handling {}", req);
+        ctx.write(res);
     }
 
     /**
@@ -38,7 +37,7 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBu
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-
+        logger.info("channel activated {}", ctx);
         DesignMsgDistributor.INSTANCE.register(ctx);
     }
 
@@ -47,9 +46,9 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBu
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
-
+        logger.info("channel deactivated {}", ctx);
         DesignMsgDistributor.INSTANCE.unregister(ctx);
+        super.channelInactive(ctx);
     }
 
 }

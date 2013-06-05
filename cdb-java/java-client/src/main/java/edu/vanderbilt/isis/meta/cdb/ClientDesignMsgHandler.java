@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
 
 
 // @Sharable
-public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBuf> {
+public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Message> {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeClient.class);
 
@@ -28,8 +28,8 @@ public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext channelHandlerContext, ByteBuf in) throws Exception {
-        logger.info("message received {}", BufUtil.hexDump(in));
+    public void messageReceived(ChannelHandlerContext channelHandlerContext, CdbMsg.Message in) throws Exception {
+        logger.info("message received {}",in);
     }
 
     /**
