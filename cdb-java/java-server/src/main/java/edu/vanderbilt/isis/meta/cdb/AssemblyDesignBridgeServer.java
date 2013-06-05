@@ -122,14 +122,14 @@ public class AssemblyDesignBridgeServer {
                 public void initChannel(SocketChannel channel) throws Exception {
                     logger.trace("initialize socket");
                     final ChannelPipeline pipe = channel.pipeline();
-                    pipe.addLast("frameDecoder", new DesignFrameDecoder());
+                    pipe.addLast("frameDecoder", new MagicLengthFrameDecoder());
+                    pipe.addLast("frameEncoder", new MagicLengthFrameEncoder());
+
                     pipe.addLast("protobufDecoder",
                             new ProtobufDecoder(CdbMsg.Message.getDefaultInstance()));
+                    pipe.addLast("protobufEncoder", new ProtobufEncoder());
 
                     pipe.addLast("distributor", new DesignMsgHandler());
-
-                    pipe.addLast("frameEncoder", new DesignFrameEncoder());
-                    pipe.addLast("protobufEncoder", new ProtobufEncoder());
                 }
             };
 

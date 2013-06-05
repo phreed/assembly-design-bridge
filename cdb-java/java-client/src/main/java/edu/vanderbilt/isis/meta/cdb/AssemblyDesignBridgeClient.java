@@ -1,5 +1,6 @@
 package edu.vanderbilt.isis.meta.cdb;
 
+import com.google.protobuf.TextFormat;
 import edu.vanderbilt.isis.meta.CdbMsg;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -12,26 +13,28 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 
 public class AssemblyDesignBridgeClient {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeClient.class);
+
     private final String host;
     private final int port;
+    private final CdbMsg.Message message;
 
-    public AssemblyDesignBridgeClient(final String host, final int port) {
+    public AssemblyDesignBridgeClient(final String host, final int port, final CdbMsg.Message message) {
         this.host = host;
         this.port = port;
-    }
-
-    public AssemblyDesignBridgeClient() {
-        this("localhost", 15150);
+        this.message = message;
     }
 
     /**
@@ -80,6 +83,13 @@ public class AssemblyDesignBridgeClient {
                 .withType(Integer.TYPE)
                 .create('P'));
 
+        options.addOption(OptionBuilder
+                .withLongOpt("message-file")
+                .withDescription("the message to be sent (in protobuf text format)")
+                .hasArg(true)
+                .withArgName("MSG")
+                .create('m'));
+
         try {
             final CommandLine line = parser.parse(options, args);
 
@@ -107,12 +117,44 @@ public class AssemblyDesignBridgeClient {
                 final String portStr = line.getOptionValue("port");
                 port = Integer.parseInt(portStr);
             }
-            new AssemblyDesignBridgeClient(host, port).start();
+
+            final AssemblyDesignBridgeClient assemblyDesignBridgeClient;
+            if (!(line.hasOption("message-file"))) {
+                assemblyDesignBridgeClient = new AssemblyDesignBridgeClient(host, port,
+                        DefaultMsg.INSTANCE.asMessage());
+            } else {
+                final File messageFile = new File(line.getOptionValue("message-file"));
+
+                if (!(messageFile.exists())) {
+                    logger.error("message file is missing {}", messageFile);
+                    return;
+                }
+                final FileInputStream inputStream = new FileInputStream(messageFile);
+                try {
+                    final String messageStr = IOUtils.toString(inputStream);
+                    final CdbMsg.Message message = parseString(messageStr);
+                    assemblyDesignBridgeClient = new AssemblyDesignBridgeClient(host, port, message);
+                } finally {
+                    inputStream.close();
+                }
+            }
+            assemblyDesignBridgeClient.start();
 
         } catch (ParseException ex) {
               logger.error("Unexpected exception", ex);
             usage(options);
         }
+    }
+
+    public static CdbMsg.Message parseString(final String message) {
+        final CdbMsg.Message.Builder builder = CdbMsg.Message.newBuilder();
+        builder.setType(CdbMsg.Message.MessageType.UPDATE);
+        try {
+            TextFormat.merge(message, builder);
+        } catch (TextFormat.ParseException ex) {
+            logger.error("bad protobuf text format message {}", message, ex);
+        }
+        return builder.build();
     }
 
     private static void usage(final Options options) {
@@ -131,19 +173,26 @@ public class AssemblyDesignBridgeClient {
         final InetSocketAddress address = new InetSocketAddress(this.host, this.port);
 
         try {
+
             final ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
+                final AssemblyDesignBridgeClient parent = AssemblyDesignBridgeClient.this;
+
+                final ClientDesignMsgHandler designMsgHandler = new ClientDesignMsgHandler(parent.message);
+
                 @Override
                 public void initChannel(SocketChannel channel) throws Exception {
                     logger.trace("initialize socket");
                     final ChannelPipeline pipe = channel.pipeline();
-                    pipe.addLast("frameDecoder", new DesignFrameDecoder());
+
+                    pipe.addLast("frameDecoder", new MagicLengthFrameDecoder());
+                    pipe.addLast("frameEncoder", new MagicLengthFrameEncoder());
+
                     pipe.addLast("protobufDecoder",
                             new ProtobufDecoder(CdbMsg.Message.getDefaultInstance()));
-
-                    pipe.addLast("reporter", new ClientDesignMsgHandler());
-
-                    pipe.addLast("frameEncoder", new DesignFrameEncoder());
                     pipe.addLast("protobufEncoder", new ProtobufEncoder());
+
+                    // pipe.addLast("executor", foo);
+                    pipe.addLast("handler", designMsgHandler);
                 }
             };
 

@@ -1,5 +1,7 @@
 package edu.vanderbilt.isis.meta.cdb;
 
+import com.google.protobuf.TextFormat;
+import edu.vanderbilt.isis.meta.CdbMsg;
 import io.netty.buffer.BufUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -10,12 +12,20 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
+import java.nio.charset.Charset;
+
 
 // @Sharable
 public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<ByteBuf> {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeClient.class);
-    private final static ByteBuf MSG = Unpooled.copiedBuffer("CDB Client", CharsetUtil.UTF_8);
+
+    final CdbMsg.Message message;
+
+    public ClientDesignMsgHandler(final CdbMsg.Message message) {
+        this.message = message;
+    }
 
     @Override
     public void messageReceived(ChannelHandlerContext channelHandlerContext, ByteBuf in) throws Exception {
@@ -46,8 +56,8 @@ public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.info("generating sample message {}", MSG);
-        ctx.write(MSG.duplicate());
+        logger.info("generating sample message {}", this.message);
+        ctx.write(this.message);
     }
 
     /**

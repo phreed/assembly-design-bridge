@@ -1,6 +1,5 @@
 package edu.vanderbilt.isis.meta.cdb;
 
-import ch.qos.logback.core.encoder.ByteArrayUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
@@ -12,13 +11,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.zip.CRC32;
 
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This frame decoder scans for the "magic".
  */
-public class DesignFrameDecoder extends ByteToMessageDecoder {
+public class MagicLengthFrameDecoder extends ByteToMessageDecoder {
     static final int MAGIC_NUMBER = 0xdeadbeef;
     static final byte[] MAGIC_NUMBER_ARRAY;
 
@@ -29,14 +29,13 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
     }
 
     private static final Logger logger = LoggerFactory
-            .getLogger(DesignFrameDecoder.class);
+            .getLogger(MagicLengthFrameDecoder.class);
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf in,
                           MessageBuf<Object> out) throws Exception {
-        logger.debug("top {}", in);
         if (in.readableBytes() < 20) {
-            logger.debug("not a full header yet, only {} bytes of {}",
+            logger.debug("cannot decode, not a full header yet, only {} bytes of {}",
                     in.readableBytes(), in.capacity());
             return;
         }
@@ -76,6 +75,7 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
             wip.readBytes(2);
 
             final int payloadChecksum = wip.readInt();
+            logger.debug("payload checksum {}", Integer.toHexString(payloadChecksum));
 
             final int headerLength = wip.readerIndex() - headerStartPos;
             logger.debug("header length {}", headerLength);
@@ -103,9 +103,9 @@ public class DesignFrameDecoder extends ByteToMessageDecoder {
 
             final byte[] payload = new byte[size];
             wip.readBytes(payload, 0, size);
-            logger.debug("payload [{}]:{}", size, BufUtil.hexDump(wip, 0, size));
+            logger.debug("payload [{}]:{}", size, Hex.encodeHexString(payload));
             final int payloadChecksumTrailer = wip.readInt();
-            logger.debug("read payload {}", Integer.toHexString(payloadChecksumTrailer));
+            logger.debug("payload checksum trailer {}", Integer.toHexString(payloadChecksumTrailer));
 
             final CRC32 dataCrc = new CRC32();
             dataCrc.update(payload);
