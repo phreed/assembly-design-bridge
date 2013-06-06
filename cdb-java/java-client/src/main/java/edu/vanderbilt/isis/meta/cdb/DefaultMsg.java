@@ -19,16 +19,29 @@ public enum DefaultMsg {
     private static final Logger logger = LoggerFactory
             .getLogger(DefaultMsg.class);
 
-    final CdbMsg.Message payload;
+    final CdbMsg.Control message;
+
     private DefaultMsg() {
-        final CdbMsg.Message.Builder builder =  CdbMsg.Message.newBuilder();
-        this.payload = builder.setType(CdbMsg.Message.MessageType.UPDATE)
-                .setCadComponent(
-                        AssemblyInterface.CADComponentType.newBuilder()
-                        .setComponentID("{bdd0008c4-4149-40ab-a6980e84ab00afd3}")
-                        .setName("FuelTank12345")
-                        .build()
-                )
+
+        final AssemblyInterface.CADComponentType cadComponentType =
+                AssemblyInterface.CADComponentType.newBuilder()
+                .setComponentID("{bdd0008c4-4149-40ab-a6980e84ab00afd3}")
+                .setName("FuelTank12345")
+                .build();
+
+        final CdbMsg.Payload payload = CdbMsg.Payload.newBuilder()
+        .setCadComponent(cadComponentType)
+                .build();
+
+        final CdbMsg.PayloadRaw payloadRaw = CdbMsg.PayloadRaw.newBuilder()
+             .setEncoding(CdbMsg.PayloadRaw.EncodingType.PB)
+                .setPayload(payload.toByteString())
+                .build();
+
+        this.message =  CdbMsg.Control.newBuilder()
+        .setAction(CdbMsg.Control.ActionType.UPDATE)
+                .addTopic("cdb")
+                .addPayload(payloadRaw)
         .build();
     }
 
@@ -42,7 +55,7 @@ public enum DefaultMsg {
     }
 
 
-    public CdbMsg.Message asMessage() {
-              return this.payload;
+    public CdbMsg.Control asMessage() {
+              return this.message;
     }
 }

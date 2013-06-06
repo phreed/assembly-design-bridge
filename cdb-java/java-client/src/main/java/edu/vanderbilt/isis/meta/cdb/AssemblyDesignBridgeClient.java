@@ -29,9 +29,9 @@ public class AssemblyDesignBridgeClient {
 
     private final String host;
     private final int port;
-    private final CdbMsg.Message message;
+    private final CdbMsg.Control message;
 
-    public AssemblyDesignBridgeClient(final String host, final int port, final CdbMsg.Message message) {
+    public AssemblyDesignBridgeClient(final String host, final int port, final CdbMsg.Control message) {
         this.host = host;
         this.port = port;
         this.message = message;
@@ -132,7 +132,7 @@ public class AssemblyDesignBridgeClient {
                 final FileInputStream inputStream = new FileInputStream(messageFile);
                 try {
                     final String messageStr = IOUtils.toString(inputStream);
-                    final CdbMsg.Message message = parseString(messageStr);
+                    final CdbMsg.Control message = parseString(messageStr);
                     assemblyDesignBridgeClient = new AssemblyDesignBridgeClient(host, port, message);
                 } finally {
                     inputStream.close();
@@ -146,9 +146,9 @@ public class AssemblyDesignBridgeClient {
         }
     }
 
-    public static CdbMsg.Message parseString(final String message) {
-        final CdbMsg.Message.Builder builder = CdbMsg.Message.newBuilder();
-        builder.setType(CdbMsg.Message.MessageType.UPDATE);
+    public static CdbMsg.Control parseString(final String message) {
+        final CdbMsg.Control.Builder builder = CdbMsg.Control.newBuilder();
+        builder.setAction(CdbMsg.Control.ActionType.UPDATE);
         try {
             TextFormat.merge(message, builder);
         } catch (TextFormat.ParseException ex) {
@@ -188,7 +188,7 @@ public class AssemblyDesignBridgeClient {
                     pipe.addLast("frameEncoder", new MagicLengthFrameEncoder());
 
                     pipe.addLast("protobufDecoder",
-                            new ProtobufDecoder(CdbMsg.Message.getDefaultInstance()));
+                            new ProtobufDecoder(CdbMsg.Control.getDefaultInstance()));
                     pipe.addLast("protobufEncoder", new ProtobufEncoder());
 
                     // pipe.addLast("executor", foo);

@@ -3,38 +3,73 @@ package edu.vanderbilt.isis.meta;
 
 /**
 * Advanced Vehicle Make (AVM) META interactive communications.
-* This is the schema for communication through the Component
-* Design Bridge (CDB).
+* This is the schema for communication through the Live-Sync
+* Component Design Bridge (CDB).
+* There are two main messages, the header which contains
+* information used for routing and the payload which is
+* processed by the end-points.
 */
 
 import "XsdTypes.proto";
 import "AssemblyInterface.proto";
 
 /**
-*  
+* This message describes the information which may be
+* used for routing of messages.
+* 
 */
-message Message {
-    enum MessageType {
+message Control {
+    enum ActionType {
       /** express interest in something */
       INTEREST = 0;
-      /** update only the fields supplied */
-      UPDATE = 1;
+      /** express interest in something */
+      DISINTEREST = 1;
       /** insert new or update all the fields */
-      FILL = 2;
+      REPLACE = 2;
+      /** update the fields explicitly specified */
+      UPDATE = 3;
       /** do whatever is needed to dispose of the items */
-      TRASH = 3;
+      DISCARD = 4;
     }
-    required MessageType type = 1;
+    required ActionType action = 1;
 
-    optional ID _id = 2;
-    repeated Notice notices = 3;
-    optional string xml = 4;
-    optional AssembliesType assemblies = 5;
-    optional CADComponentType cadComponent = 6;
+    optional ID id = 2;
+    repeated string topic = 3;
+
+    repeated Notice notices = 4;
+    repeated PayloadRaw payload = 5;
+
+}
+
+/**
+* Of particular interest is the payload.
+* The payload is actually the Payload message but is
+* represented in bytes so as not to incur the parsing
+* cost prematurely. 
+*/
+message PayloadRaw {
+    enum EncodingType {
+      /** XML */
+      XML = 0;
+      /** express interest in something */
+      PB = 1;
+    }
+    required EncodingType encoding = 1;
+    required bytes payload = 2;
+}
+
+/**
+* The payload is a set of objects which have changed.
+* They will be used to perform the requested action.
+*/
+message Payload {
+    optional AssembliesType assemblies = 1;
+    optional CADComponentType cadComponent = 2;
 }
 
 /**
 * Usually used for reporting faults of various types.
+* May also be used for generating general acknowledgements.
 */
 message Notice {
     enum NoticeType {

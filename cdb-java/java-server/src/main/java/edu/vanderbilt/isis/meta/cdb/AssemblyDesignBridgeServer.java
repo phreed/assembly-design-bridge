@@ -126,7 +126,7 @@ public class AssemblyDesignBridgeServer {
                     pipe.addLast("frameEncoder", new MagicLengthFrameEncoder());
 
                     pipe.addLast("protobufDecoder",
-                            new ProtobufDecoder(CdbMsg.Message.getDefaultInstance()));
+                            new ProtobufDecoder(CdbMsg.Control.getDefaultInstance()));
                     pipe.addLast("protobufEncoder", new ProtobufEncoder());
 
                     pipe.addLast("distributor", new DesignMsgHandler());

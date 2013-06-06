@@ -25,7 +25,7 @@ public enum DesignMsgDistributor {
      * @param sourceCtx
      * @param msg
      */
-    public void send(ChannelHandlerContext sourceCtx, final CdbMsg.Message msg) {
+    public void send(ChannelHandlerContext sourceCtx, final CdbMsg.Control msg) {
         for (final ChannelHandlerContext ctx : this.channelMap.values()) {
             if (ctx.equals(sourceCtx)) {
                 continue;

@@ -17,19 +17,35 @@ import java.nio.charset.Charset;
 
 
 // @Sharable
-public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Message> {
+public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Control> {
     private static final Logger logger = LoggerFactory
-            .getLogger(AssemblyDesignBridgeClient.class);
+            .getLogger(ClientDesignMsgHandler.class);
+    final CdbMsg.Control message;
 
-    final CdbMsg.Message message;
-
-    public ClientDesignMsgHandler(final CdbMsg.Message message) {
+    public ClientDesignMsgHandler(final CdbMsg.Control message) {
         this.message = message;
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext channelHandlerContext, CdbMsg.Message in) throws Exception {
-        logger.info("message received {}",in);
+    public void messageReceived(ChannelHandlerContext channelHandlerContext, CdbMsg.Control in) throws Exception {
+        logger.info("message received {}\n{}", Integer.toHexString(in.hashCode()), in);
+        for (final CdbMsg.PayloadRaw item : in.getPayloadList()) {
+            switch (item.getEncoding()) {
+                case PB: {
+                    final CdbMsg.Payload payload = CdbMsg.Payload.newBuilder()
+                            .mergeFrom(item.getPayload())
+                            .build();
+                    logger.info("protobuf {} \n{}", Integer.toHexString(in.hashCode()), payload);
+                }
+
+                break;
+                case XML:
+                    logger.info("xml \n{}", item.getPayload());
+                    break;
+                default:
+                    logger.error("unknown encoding type {}", item.getEncoding());
+            }
+        }
     }
 
     /**
@@ -56,7 +72,7 @@ public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.info("generating sample message {}", this.message);
+        logger.info("generating sample message\n{}", this.message);
         ctx.write(this.message);
     }
 

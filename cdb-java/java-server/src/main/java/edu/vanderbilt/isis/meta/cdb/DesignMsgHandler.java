@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Message> {
+public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Control> {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeServer.class);
 
@@ -21,7 +21,7 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, CdbMsg.Message req) {
+    public void messageReceived(ChannelHandlerContext ctx, CdbMsg.Control req) {
         logger.debug("handling \n{}", req);
         DesignMsgDistributor.INSTANCE.send(ctx, req);
         /*
