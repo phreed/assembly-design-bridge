@@ -51,20 +51,23 @@ message PayloadRaw {
     enum EncodingType {
       /** XML */
       XML = 0;
-      /** express interest in something */
-      PB = 1;
+      /** A protocol buffer representation */
+      PROTOBUF = 1;
     }
-    required EncodingType encoding = 1;
+    required EncodingType encoding = 1 [default=PROTOBUF];
     required bytes payload = 2;
 }
 
 /**
 * The payload is a set of objects which have changed.
 * They will be used to perform the requested action.
+* This is the message encoded into the PayloadRaw::payload
+* field when the PayloadRaw::encoding is PROTOBUF.
 */
 message Payload {
     optional AssembliesType assemblies = 1;
-    optional CADComponentType cadComponent = 2;
+    repeated CADComponentType cadComponent = 2;
+    repeated ConstraintType cadConstraint = 3;
 }
 
 /**
@@ -88,7 +91,9 @@ message Notice {
     }
     required NoticeType type = 1;
     optional ID _id = 2;
+    /** intended for reading by a human */
     optional string msg = 3;
-    optional string code = 4;
+    /** intended for processing by machine */
+    optional bytes code = 4;
 }
 
