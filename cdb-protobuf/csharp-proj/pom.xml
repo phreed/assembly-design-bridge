@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+     <groupId>edu.vanderbilt.isis.meta</groupId>
+     <artifactId>cdb-protobuf-parent</artifactId>
+     <version>1.0.0</version>
+   </parent>
+
+   <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <target.csharp.path>target/generated-sources/java/</target.csharp.path>
+     <protobuf.source>${project.parent.build.sourceDirectory}</protobuf.source>
+   </properties>
+
+  <artifactId>cdb-protobuf-csharp</artifactId>
+  <packaging>jar</packaging>
+
+  <name>meta protocol buffer message C#</name>
+  <url>http://maven.apache.org</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>pb25</id>
+      <activation>
+         <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <generation.classfier>protoc25</generation.classfier>
+        <protoc.version.exec>protoc25</protoc.version.exec>
+      </properties>
+    </profile>
+
+    <profile>
+       <id>gen-csharp</id>
+       <activation>
+         <os>
+           <name>Windows XP</name>
+           <family>Windows</family>
+         </os>
+       </activation>
+
+        <build>
+          <plugins>
+            <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-csharp-sources</id>
+                  <phase>generate-sources</phase>
+                  <configuration>
+                    <tasks>
+                      <mkdir dir="${target.csharp.path}"/>
+		      <exec executable="protogen" dir="${protobuf.source}">
+                        <arg value="-d"/>
+            <arg value="-o:${basedir}/${target.csharp.path}/CdbMsg.cs"/>
+                        <arg value="-i:CdbMsg.proto"/>
+                      </exec>
+                    </tasks>
+                  </configuration>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+      </build>
+     </profile>
+  </profiles>
+
+  <build>
+      <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+                <classifier>${generation.classfier}</classifier>
+            </configuration>
+        </plugin>
+      </plugins>
+  </build>
+</project>

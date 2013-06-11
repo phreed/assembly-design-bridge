@@ -141,7 +141,7 @@ public class AssemblyDesignBridgeClient {
             assemblyDesignBridgeClient.start();
 
         } catch (ParseException ex) {
-              logger.error("Unexpected exception", ex);
+            logger.error("Unexpected exception", ex);
             usage(options);
         }
     }
@@ -159,7 +159,7 @@ public class AssemblyDesignBridgeClient {
 
     private static void usage(final Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp( AssemblyDesignBridgeClient.class.getSimpleName(), options );
+        formatter.printHelp(AssemblyDesignBridgeClient.class.getSimpleName(), options);
     }
 
     /**

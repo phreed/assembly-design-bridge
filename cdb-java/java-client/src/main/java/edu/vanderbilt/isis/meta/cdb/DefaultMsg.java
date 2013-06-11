@@ -25,24 +25,27 @@ public enum DefaultMsg {
 
         final AssemblyInterface.CADComponentType cadComponentType =
                 AssemblyInterface.CADComponentType.newBuilder()
-                .setComponentID("{bdd0008c4-4149-40ab-a6980e84ab00afd3}")
-                .setName("FuelTank12345")
-                .build();
+                        .setComponentID("{bdd0008c4-4149-40ab-a6980e84ab00afd3}")
+                        .setName("FuelTank12345")
+                        .build();
 
-        final CdbMsg.Payload payload = CdbMsg.Payload.newBuilder()
-        .addCadComponent(cadComponentType)
-                .build();
+        final CdbMsg.Payload payload =
+                CdbMsg.Payload.newBuilder()
+                        .addCadComponent(cadComponentType)
+                        .build();
 
-        final CdbMsg.PayloadRaw payloadRaw = CdbMsg.PayloadRaw.newBuilder()
-             .setEncoding(CdbMsg.PayloadRaw.EncodingType.PROTOBUF)
-                .setPayload(payload.toByteString())
-                .build();
+        final CdbMsg.PayloadRaw payloadRaw =
+                CdbMsg.PayloadRaw.newBuilder()
+                        .setEncoding(CdbMsg.PayloadRaw.EncodingType.PROTOBUF)
+                        .setPayload(payload.toByteString())
+                        .build();
 
-        this.message =  CdbMsg.Control.newBuilder()
-        .setAction(CdbMsg.Control.ActionType.UPDATE)
-                .addTopic("cdb")
-                .addPayload(payloadRaw)
-        .build();
+        this.message =
+                CdbMsg.Control.newBuilder()
+                        .setAction(CdbMsg.Control.ActionType.UPDATE)
+                        .addTopic("cdb")
+                        .addPayload(payloadRaw)
+                        .build();
     }
 
 
@@ -51,11 +54,11 @@ public enum DefaultMsg {
                 "cadComponent {\n" +
                 "  ComponentID: \"{bdd0008c4-4149-40ab-a6980e84ab00afd3}\"\n" +
                 "  Name: \"FuelTank12345\"\n" +
-                "}" ;
+                "}";
     }
 
 
     public CdbMsg.Control asMessage() {
-              return this.message;
+        return this.message;
     }
 }
