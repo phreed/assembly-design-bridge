@@ -42,9 +42,47 @@
          <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <genClassifier>protoc25</genClassifier>
+        <generation.classfier>protoc25</generation.classfier>
+        <protoc.version.exec>protoc25</protoc.version.exec>
       </properties>
     </profile>
+
+    <profile>
+       <id>gen-csharp</id>
+       <activation>
+         <os>
+           <name>Windows XP</name>
+           <family>Windows</family>
+         </os>
+       </activation>
+
+        <build>
+          <plugins>
+            <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-csharp-sources</id>
+                  <phase>generate-sources</phase>
+                  <configuration>
+                    <tasks>
+                      <mkdir dir="${target.csharp.path}"/>
+                      <exec executable="protogen" dir="src/main/protobuf">
+                        <arg value="-d"/>
+            <arg value="-o:${basedir}/${target.csharp.path}/CdbMsg.cs"/>
+                        <arg value="-i:CdbMsg.proto"/>
+                      </exec>
+                    </tasks>
+                  </configuration>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+      </build>
+     </profile>
   </profiles>
 
   <build>
@@ -53,33 +91,26 @@
           <artifactId>maven-antrun-plugin</artifactId>
           <executions>
             <execution>
+        <!-- build the java files -->
               <id>generate-java-sources</id>
               <phase>generate-sources</phase>
               <configuration>
                 <tasks>
-		  <!-- build the java files -->
                   <mkdir dir="${target.java.path}"/>
-                  <exec executable="protoc">
+      <exec executable="${protoc.version.exec}">
                     <arg value="--proto_path=src/main/protobuf"/>
-		    <arg value="--java_out=${target.java.path}"/>
+        <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/CdbMsg.proto"/>
                   </exec>
-                  <exec executable="protoc">
+      <exec executable="${protoc.version.exec}">
                     <arg value="--proto_path=src/main/protobuf"/>
-		    <arg value="--java_out=${target.java.path}"/>
+        <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/XsdTypes.proto"/>
                   </exec>
-                  <exec executable="protoc">
+      <exec executable="${protoc.version.exec}">
                     <arg value="--proto_path=src/main/protobuf"/>
-		    <arg value="--java_out=${target.java.path}"/>
+        <arg value="--java_out=${target.java.path}"/>
                     <arg value="src/main/protobuf/AssemblyInterface.proto"/>
-                  </exec>
-		  <!-- build the csharp files -->
-                  <mkdir dir="${target.csharp.path}"/>
-                  <exec executable="protogen" dir="src/main/protobuf">
-                    <arg value="-d"/>
-		    <arg value="-o:${basedir}/${target.csharp.path}/CdbMsg.cs"/>
-                    <arg value="-i:CdbMsg.proto"/>
                   </exec>
                 </tasks>
               </configuration>
@@ -105,16 +136,7 @@
             <artifactId>maven-jar-plugin</artifactId>
             <version>2.4</version>
             <configuration>
-                <classifier>${genClassifier}</classifier>
-    <!--
-                <archive>
-                    <index>true</index>
-                    <manifest>
-                        <classpathPrefix>lib/</classpathPrefix>
-                        <addClasspath>true</addClasspath>
-                    </manifest>
-                </archive>
-    -->
+                <classifier>${generation.classfier}</classifier>
             </configuration>
         </plugin>
 
@@ -129,7 +151,7 @@
              <goals> <goal>add-source</goal> </goals>
              <configuration> 
                <sources> 
-	           <source>${basedir}/${target.java.path}</source>
+                 <source>${basedir}/${target.java.path}</source>
                </sources>
              </configuration>
            </execution>

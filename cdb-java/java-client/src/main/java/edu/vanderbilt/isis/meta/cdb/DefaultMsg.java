@@ -30,11 +30,11 @@ public enum DefaultMsg {
                 .build();
 
         final CdbMsg.Payload payload = CdbMsg.Payload.newBuilder()
-        .setCadComponent(cadComponentType)
+        .addCadComponent(cadComponentType)
                 .build();
 
         final CdbMsg.PayloadRaw payloadRaw = CdbMsg.PayloadRaw.newBuilder()
-             .setEncoding(CdbMsg.PayloadRaw.EncodingType.PB)
+             .setEncoding(CdbMsg.PayloadRaw.EncodingType.PROTOBUF)
                 .setPayload(payload.toByteString())
                 .build();
 

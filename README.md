@@ -45,5 +45,9 @@ Depends on cdb-protobuf.
 
 cdb-schema :
 The files from the GME CyPhy UML model.
+The protobuf files are generated from xsd files
+using protomak.
+Protomak has some issues but appears to be 
+adequate for our purposes.
 
 README.md

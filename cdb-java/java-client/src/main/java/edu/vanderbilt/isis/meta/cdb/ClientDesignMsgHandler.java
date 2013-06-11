@@ -31,7 +31,7 @@ public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<
         logger.info("message received {}\n{}", Integer.toHexString(in.hashCode()), in);
         for (final CdbMsg.PayloadRaw item : in.getPayloadList()) {
             switch (item.getEncoding()) {
-                case PB: {
+                case PROTOBUF: {
                     final CdbMsg.Payload payload = CdbMsg.Payload.newBuilder()
                             .mergeFrom(item.getPayload())
                             .build();
