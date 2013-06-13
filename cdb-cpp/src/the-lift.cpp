@@ -54,7 +54,7 @@ private:
 		if (!error) {
 			if (endpoint_iterator != tcp::resolver::iterator()) {
 				socket_.close();
-				tcp::endpoint endpoint = *endpoint_iterator;
+				const tcp::endpoint endpoint = *endpoint_iterator;
 				socket_.async_connect(endpoint,
 						boost::bind(&the_lift::handle_connect, this,
 								boost::asio::placeholders::error,
@@ -65,7 +65,7 @@ private:
 		boost::asio::async_read(socket_,
 				boost::asio::buffer(read_msg_.data(),
 						meta::frame::header_length),
-				boost::bind(&the_lift::handle_read_frame_header, this,
+				boost::bind(&the_lift::handle_read_header, this,
 						boost::asio::placeholders::error));
 
 	}
@@ -73,7 +73,7 @@ private:
 	/**
 	 * Read the frame header.
 	 */
-	void handle_read_frame_header(const boost::system::error_code& error) {
+	void handle_read_header(const boost::system::error_code& error) {
 		if (error) {
 			do_close();
 			return;
@@ -99,7 +99,7 @@ private:
 		boost::asio::async_read(socket_,
 				boost::asio::buffer(read_msg_.data(),
 						meta::frame::header_length),
-				boost::bind(&the_lift::handle_read_frame_header, this,
+				boost::bind(&the_lift::handle_read_header, this,
 						boost::asio::placeholders::error));
 
 	}
@@ -192,8 +192,8 @@ int main(int argc, char* argv[]) {
 			std::string file = vm["file"];
 			std::cout << "file name was set to " << vm["file"].as<std::string>()
 					<< "." << std::endl;
-			std::ifstream f;
-			f.open(file);
+			std::ifstream ifs;
+			ifs.open(file.c_str(), std::ios::in | std::ios::binary);
 		} else {
 			std::cout << "standard input being used" << std::endl;
 			instream = std::cin;
