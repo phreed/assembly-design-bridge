@@ -88,7 +88,7 @@ inline bool PayloadRaw_EncodingType_Parse(
 enum Notice_NoticeType {
   Notice_NoticeType_FAIL = 0,
   Notice_NoticeType_REJECT = 1,
-  Notice_NoticeType_ERROR = 2,
+  Notice_NoticeType_FAULT = 2,
   Notice_NoticeType_WARN = 3,
   Notice_NoticeType_INFO = 4,
   Notice_NoticeType_ACK = 5
@@ -560,7 +560,7 @@ class Notice : public ::google::protobuf::Message {
   typedef Notice_NoticeType NoticeType;
   static const NoticeType FAIL = Notice_NoticeType_FAIL;
   static const NoticeType REJECT = Notice_NoticeType_REJECT;
-  static const NoticeType ERROR = Notice_NoticeType_ERROR;
+  static const NoticeType FAULT = Notice_NoticeType_FAULT;
   static const NoticeType WARN = Notice_NoticeType_WARN;
   static const NoticeType INFO = Notice_NoticeType_INFO;
   static const NoticeType ACK = Notice_NoticeType_ACK;

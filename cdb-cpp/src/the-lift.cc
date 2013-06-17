@@ -14,7 +14,9 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/program_options.hpp>
+
 #include "CdbMsg.pb.h"
+#include "BridgeClient.h"
 
 /**
  * Read lines from standard input and write them to the socket on the main thread.
@@ -26,54 +28,39 @@ int main(int argc, char* argv[]) {
 
 	try {
 		// Declare the supported options.
-		po::options_description desc("Allowed options");
+		po::options_description odesc("Allowed options");
+		std::string host;
+		std::string port;
 		// @formatter off
-		desc.add_options()
+		odesc.add_options()
 				("help", "produce help message")
-				("host",po::value<std::string>(), "set host name (or ip addr)")
-				("port",po::value<int>(), "set port number")
-				("initfile",po::value<std::string>(), "initial load")
+				("host", po::value<std::string>(&host)->default_value("localhost"), "set host name (or ip addr)")
+				("port", po::value<std::string>(&port)->default_value("15150"), "set port number or service name")
+				("initfile", po::value<std::string>(), "initial load")
 				;
 		// @formater on
 
-		po::variables_map vm;
-		po::store(po::parse_command_line(argc, argv, desc), vm);
-		po::notify(vm);
+		po::variables_map varmap;
+		po::parsed_options parsedOptions = po::parse_command_line(argc, argv, odesc);
+		po::store(parsedOptions, varmap);
+		po::notify(varmap);
 
-		if (vm.count("help")) {
-			std::cout << desc << std::endl;
+		if (varmap.count("help")) {
+			std::cout << odesc << std::endl;
 			return 1;
 		}
 
-		std::string host;
-		if (vm.count("host")) {
-			host = vm["host"];
-			std::cout << "host name was set to " << host << "." << std::endl;
-		} else {
-			host = "localhost";
-			std::cout << "host name was not set, default used." << std::endl;
-		}
-
-		int port;
-		if (vm.count("port")) {
-			port = vm["port"];
-			std::cout << "port number was set to "
-					<< vm["port"].as<std::string>() << "." << std::endl;
-		} else {
-			host = "15150";
-			std::cout << "port number was not set, default used." << std::endl;
-		}
-
-		std::istream instream;
-		if (vm.count("initfile")) {
-			std::string file = vm["file"];
-			std::cout << "file name was set to " << vm["file"].as<std::string>()
+		std::istream *instream;
+		if (varmap.count("initfile")) {
+			std::string file = varmap["file"].as<std::string>();
+			std::cout << "file name was set to " << varmap["initfile"].as<std::string>()
 					<< "." << std::endl;
 			std::ifstream ifs;
 			ifs.open(file.c_str(), std::ios::in | std::ios::binary);
+			instream = &ifs;
 		} else {
 			std::cout << "standard input being used" << std::endl;
-			instream = std::cin;
+			instream = &std::cin;
 		}
 
 		boost::asio::io_service io_service;

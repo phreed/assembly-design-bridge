@@ -81,7 +81,7 @@ message Notice {
       /** no part of the request was performed */
       REJECT = 1;
       /** there was a severe problem but it "worked" */
-      ERROR = 2;
+      FAULT = 2;
       /** there was a problem but the model is still consistent (probably) */
       WARN = 3;
       /** something interesting happened */

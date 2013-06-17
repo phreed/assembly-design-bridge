@@ -17,11 +17,9 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/enable_shared_from_this.hpp>
+// #include <boost/log/trivial.hpp>
 
 using namespace std;
 namespace asio = boost::asio;
@@ -40,7 +38,7 @@ typedef deque<meta::Control> EditDeque;
  * As messages are received they are placed in a queue which
  * are then passed to the CREO api to update the model.
  */
-class BridgeConnection: public boost::enable_shared_from_this<BridgeConnection> {
+class BridgeConnection : public boost::enable_shared_from_this<BridgeConnection> {
 public:
 	typedef boost::shared_ptr<BridgeConnection> Pointer;
 	typedef boost::shared_ptr<meta::Control> ControlPointer;
@@ -57,8 +55,9 @@ public:
 	}
 
 	void start(boost::asio::ip::tcp::resolver::iterator it) {
-		m_socket.async_connect(*it, start_read_header);
-		start_read_header();
+		m_socket.async_connect(*it, 
+			boost::bind(&BridgeConnection::handle_connect,
+						shared_from_this(), asio::placeholders::error));
 	}
 
 private:
@@ -72,6 +71,13 @@ private:
 					boost::shared_ptr<meta::Control>(new meta::Control())) {
 	}
 
+	void handle_connect(const boost::system::error_code& error) {
+		if (error) {
+			return;
+		}
+		start_read_header();
+	}
+
 	void start_read_header() {
 		m_readbuf.resize(HEADER_SIZE);
 		asio::async_read(m_socket, asio::buffer(m_readbuf),
@@ -82,7 +88,7 @@ private:
 	void handle_read_header(const boost::system::error_code& error) {
 		DEBUG && (cerr << "handle read " << error.message() << '\n');
 		if (!error) {
-			DEBUG && (cerr << "Got header!\n");
+			// BOOST_LOG_TRIVIAL(info) << "Got header!\n");
 			DEBUG && (cerr << show_hex(m_readbuf) << endl);
 			unsigned msg_len = m_packed_request.decode_header(m_readbuf);
 			DEBUG && (cerr << msg_len << " bytes\n");
@@ -131,27 +137,28 @@ private:
 
 };
 
-struct BridgeClient::BridgeClientImpl {
+struct BridgeClient::BridgeClientImpl { 
 	tcp::resolver m_resolver;
 	EditDeque m_delta;
 	std::string m_host;
-	unsigned m_port;
+	std::string m_service;
 
 	BridgeClientImpl(asio::io_service& io_service, std::string host,
-			unsigned port) :  m_resolver(io_service), m_host(host), m_port(port) {
+			std::string service) :  m_resolver(io_service), m_host(host), m_service(service) {
 		start_resolve();
 	}
 
 	void start_resolve() {
-		tcp::resolver::query query(m_host, m_port);
-		m_resolver.async_resolve(query, handle_resolve);
+		tcp::resolver::query query(m_host, m_service);
+		m_resolver.async_resolve(query, 
+			boost::bind(&BridgeClientImpl::handle_resolution, this, 
+				asio::placeholders::error,  boost::asio::placeholders::iterator));
 	}
 
 	/**
 	 * Called with connection iterator for each interface (should be just one).
 	 */
-	void handle_resolve(const boost::system::error_code &ec, tcp::resolver::iterator it)
-	{
+	void handle_resolution(const boost::system::error_code &ec, tcp::resolver::iterator it) {
 	  if (ec)  {
 		  /** logger.warn("could not resolve m_host {} and port {}", m_host, port); */
 		  return;
@@ -162,8 +169,9 @@ struct BridgeClient::BridgeClientImpl {
 
 };
 
-BridgeClient::BridgeClient(asio::io_service& io_service, std::string host, unsigned port) :
-		impl(new BridgeClientImpl(io_service, host, port)) {
+BridgeClient::BridgeClient(boost::asio::io_service& io_service, const std::string host, const std::string service) :
+		impl(new BridgeClientImpl(io_service, host, service)) 
+{
 }
 
 BridgeClient::~BridgeClient() {

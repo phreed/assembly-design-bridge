@@ -188,7 +188,7 @@ void protobuf_AddDesc_CdbMsg_2eproto() {
     "sis.meta.Notice.NoticeType\022)\n\003_id\030\002 \001(\0132"
     "\034.edu.vanderbilt.isis.meta.ID\022\013\n\003msg\030\003 \001"
     "(\t\022\014\n\004code\030\004 \001(\014\"J\n\nNoticeType\022\010\n\004FAIL\020\000"
-    "\022\n\n\006REJECT\020\001\022\t\n\005ERROR\020\002\022\010\n\004WARN\020\003\022\010\n\004INF"
+    "\022\n\n\006REJECT\020\001\022\t\n\005FAULT\020\002\022\010\n\004WARN\020\003\022\010\n\004INF"
     "O\020\004\022\007\n\003ACK\020\005", 972);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "CdbMsg.proto", &protobuf_RegisterTypes);
@@ -1243,7 +1243,7 @@ bool Notice_NoticeType_IsValid(int value) {
 #ifndef _MSC_VER
 const Notice_NoticeType Notice::FAIL;
 const Notice_NoticeType Notice::REJECT;
-const Notice_NoticeType Notice::ERROR;
+const Notice_NoticeType Notice::FAULT;
 const Notice_NoticeType Notice::WARN;
 const Notice_NoticeType Notice::INFO;
 const Notice_NoticeType Notice::ACK;
