@@ -21,7 +21,6 @@
 #include <boost/enable_shared_from_this.hpp>
 // #include <boost/log/trivial.hpp>
 
-using namespace std;
 namespace asio = boost::asio;
 using asio::ip::tcp;
 using boost::uint8_t;
@@ -29,7 +28,7 @@ using boost::uint8_t;
 #define DEBUG true
 
 namespace meta = edu::vanderbilt::isis::meta;
-typedef deque<meta::Control> EditDeque;
+typedef std::deque<meta::Control> EditDeque;
 
 /**
  * connection - handles a connection with a single client.
@@ -63,11 +62,11 @@ public:
 private:
 	tcp::socket m_socket;
 	EditDeque& m_delta_ref;
-	vector<uint8_t> m_readbuf;
-	FramedMessage<meta::Control> m_packed_request;
+	std::vector<uint8_t> m_readbuf;
+	FramedMessage<meta::Control> m_framed_control;
 
 	BridgeConnection(asio::io_service& io_service, EditDeque& delta) :
-			m_socket(io_service), m_delta_ref(delta), m_packed_request(
+			m_socket(io_service), m_delta_ref(delta), m_framed_control(
 					boost::shared_ptr<meta::Control>(new meta::Control())) {
 	}
 
@@ -86,14 +85,15 @@ private:
 	}
 
 	void handle_read_header(const boost::system::error_code& error) {
-		DEBUG && (cerr << "handle read " << error.message() << '\n');
-		if (!error) {
-			// BOOST_LOG_TRIVIAL(info) << "Got header!\n");
-			DEBUG && (cerr << show_hex(m_readbuf) << endl);
-			unsigned msg_len = m_packed_request.decode_header(m_readbuf);
-			DEBUG && (cerr << msg_len << " bytes\n");
-			start_read_body(msg_len);
+		DEBUG && (std::cerr << "handle read " << error.message() << std::endl);
+		if (error) {
+			return;
 		}
+		DEBUG && (std::cerr << "Got header!" << std::endl);
+		DEBUG && (std::cerr << show_hex(m_readbuf) << std::endl);
+		unsigned msg_len = m_framed_control.decode_header(m_readbuf);
+		DEBUG && (std::cerr << msg_len << " bytes" << std::endl);
+		start_read_body(msg_len);
 	}
 
 	/**
@@ -113,10 +113,10 @@ private:
 	}
 
 	void handle_read_body(const boost::system::error_code& error) {
-		DEBUG && (cerr << "handle body " << error << '\n');
+		DEBUG && (std::cerr << "handle body " << error << std::endl);
 		if (!error) {
-			DEBUG && (cerr << "Got body!\n");
-			DEBUG && (cerr << show_hex(m_readbuf) << endl);
+			DEBUG && (std::cerr << "Got body!" << std::endl);
+			DEBUG && (std::cerr << show_hex(m_readbuf) << std::endl);
 			handle_request();
 			start_read_header();
 		}
@@ -127,11 +127,11 @@ private:
 	 * TODO: This is where the call to CREO is made.
 	 */
 	void handle_request() {
-		if (!m_packed_request.unpack(m_readbuf)) {
+		if (!m_framed_control.unpack(m_readbuf)) {
 			// log.warn("bad message, could not unpack");
 			return;
 		}
-		ControlPointer req = m_packed_request.get_msg();
+		ControlPointer req = m_framed_control.get_msg();
 		m_delta_ref.push_front(*req);
 	}
 

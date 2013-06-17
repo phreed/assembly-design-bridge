@@ -17,14 +17,12 @@ typedef std::vector<boost::uint8_t> data_buffer;
 template <class CharContainer>
 std::string show_hex(const CharContainer& c)
 {
-    std::string hex;
-    char buf[16];
+	std::ostringstream hex; 
     typename CharContainer::const_iterator i;
     for (i = c.begin(); i != c.end(); ++i) {
-        std::sprintf(buf, "%02X ", static_cast<unsigned>(*i) & 0xFF);
-        hex += buf;
+		hex << std::hex << *i;
     }
-    return hex;
+    return hex.str();
 }
 
 
