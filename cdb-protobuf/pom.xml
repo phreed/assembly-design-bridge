@@ -41,82 +41,33 @@
   </dependencyManagement>
 
   <build>
-  <sourceDirectory>src/main/protobuf</sourceDirectory>
-  <pluginManagement>
-    <plugins>
+    <sourceDirectory>src/main/protobuf</sourceDirectory>
+    <pluginManagement>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>2.3.2</version>
+              <configuration>
+                  <source>1.6</source>
+                  <target>1.6</target>
+              </configuration>
+          </plugin>
+  
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>2.4</version>
+          </plugin>
+  
         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-            </configuration>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
         </plugin>
-
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>2.4</version>
-        </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-      </plugin>
-
-    <!--
-      <plugin>
-        <artifactId>maven-nar-plugin</artifactId>
-        <version>nar-version-number</version>
-        <extensions>true</extensions>
-      </plugin>
-      -->
-    </plugins>
-  </pluginManagement>
-
-  <!--
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-           <execution>
-             <id>parse-version</id>
-             <phase>validate</phase>
-             <goals> <goal>parse-version</goal> </goals>
-          </execution>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>${basedir}/src/main/protobuf/CdbMsg.proto</file>
-                  <type>proto</type>
-                  <classifier>cdb-message</classifier>
-                </artifact>
-                <artifact>
-                  <file>${basedir}/src/main/protobuf/XsdTypes.proto</file>
-                  <type>proto</type>
-                  <classifier>cdb-xsd</classifier>
-                </artifact>
-                <artifact>
-                  <file>${basedir}/src/main/protobuf/AssemblyInterface.proto</file>
-                  <type>proto</type>
-                  <classifier>cdb-assembly</classifier>
-                </artifact>
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    -->
+  
+      </plugins>
+    </pluginManagement>
+  
   </build>
 </project>
