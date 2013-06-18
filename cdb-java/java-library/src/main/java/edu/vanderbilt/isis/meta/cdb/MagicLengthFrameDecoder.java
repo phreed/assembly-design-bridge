@@ -17,6 +17,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This frame decoder scans for the "magic".
+ * <table>
+ * <tr><th>size (bytes)</th><th>encoding</th><th>purpose</th></tr>
+ * <tr><td>4</td><td>0xdeadbeef</td><td>magic indicates start of frame </td></tr>
+ * <tr><td>4</td><td>big endian 32 bit integer, bytes</td><td>size of the payload</td></tr>
+ * <tr><td>1</td><td>error code</td><td>error</td></tr>
+ * <tr><td>1</td><td>8 bit integer, higher is greater</td><td>priority</td></tr>
+ * <tr><td>2</td><td>bits</td><td>reserved</td></tr>
+ * <tr><td>4</td><td>crc32 checksum</td><td>payload validation</td></tr>
+ * <tr><td>4</td><td>crc32 checksum</td><td>header validation (previous 16 bytes)</td></tr>
+ * <tr><td>(size of the payload)</td><td>protocol buffer bytes</td><td>payload</td></tr>
+ * <tr><td>4</td><td>crc32 checksum</td><td>payload validation (repeated)</td></tr>
+ * </table>
  */
 public class MagicLengthFrameDecoder extends ByteToMessageDecoder {
     static final int MAGIC_NUMBER = 0xdeadbeef;

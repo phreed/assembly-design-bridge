@@ -7,7 +7,7 @@
  */
 
 #include "BridgeClient.h"
-#include "FramedMessage.h"
+#include "FramedPayload.h"
 #include "CdbMsg.pb.h"
 
 #include <cassert>
@@ -28,7 +28,7 @@ using boost::uint8_t;
 #define DEBUG true
 
 namespace meta = edu::vanderbilt::isis::meta;
-typedef std::deque<meta::Control> EditDeque;
+typedef std::deque<meta::Control> edit_deque;
 
 /**
  * connection - handles a connection with a single client.
@@ -45,8 +45,8 @@ public:
 	/**
 	 * The factory function to create the bridge connection object.
 	 */
-	static Pointer create(asio::io_service& io_service, EditDeque& delta) {
-		return Pointer(new BridgeConnection(io_service, delta));
+	static Pointer create(asio::io_service& io_service, edit_deque& edit) {
+		return Pointer(new BridgeConnection(io_service, edit));
 	}
 
 	tcp::socket& get_socket() {
@@ -61,12 +61,12 @@ public:
 
 private:
 	tcp::socket m_socket;
-	EditDeque& m_delta_ref;
+	edit_deque& m_edit_ref;
 	std::vector<uint8_t> m_readbuf;
-	FramedMessage<meta::Control> m_framed_control;
+	FramedPayload<meta::Control> m_framed_control;
 
-	BridgeConnection(asio::io_service& io_service, EditDeque& delta) :
-			m_socket(io_service), m_delta_ref(delta), m_framed_control(
+	BridgeConnection(asio::io_service& io_service, edit_deque& edit) :
+			m_socket(io_service), m_edit_ref(edit), m_framed_control(
 					boost::shared_ptr<meta::Control>(new meta::Control())) {
 	}
 
@@ -89,37 +89,41 @@ private:
 		if (error) {
 			return;
 		}
-		DEBUG && (std::cerr << "Got header!" << std::endl);
-		DEBUG && (std::cerr << show_hex(m_readbuf) << std::endl);
-		unsigned msg_len = m_framed_control.decode_header(m_readbuf);
-		DEBUG && (std::cerr << msg_len << " bytes" << std::endl);
-		start_read_body(msg_len);
+		DEBUG && (std::cerr << "Got header!" << '\n' << show_hex(m_readbuf) << std::endl);
+		unsigned start = 0;
+		unsigned payload_length = m_framed_control.decode_header(m_readbuf, start);
+		if (payload_length < 1) {
+			start_read_header();
+			return;
+		}
+		DEBUG && (std::cerr << payload_length << " bytes" << std::endl);
+		start_read_body(start, payload_length);
 	}
 
 	/**
 	 * called once a header has been successfully read.
+	 * m_readbuf already contains the header in the first HEADER_SIZE bytes after start.
+	 * Expand it to fit in the body as well, and start async read into the body.
+	 * The final checksum is not included in the payload length.
 	 */
-	void start_read_body(unsigned msg_len) {
-		/*
-		 * m_readbuf already contains the header in its first HEADER_SIZE bytes.
-		 * Expand it to fit in the body as well, and start async read into the body.
-		 */
-		m_readbuf.resize(HEADER_SIZE + msg_len);
-		asio::mutable_buffers_1 buf = asio::buffer(&m_readbuf[HEADER_SIZE],
-				msg_len);
+	void start_read_body(const unsigned start, const unsigned payload_length) {
+		
+		m_readbuf.resize(start + HEADER_SIZE + payload_length + 4);
+		asio::mutable_buffers_1 buf = 
+			asio::buffer(&m_readbuf[start + HEADER_SIZE], payload_length + 4);
 		asio::async_read(m_socket, buf,
 				boost::bind(&BridgeConnection::handle_read_body,
 						shared_from_this(), asio::placeholders::error));
 	}
 
-	void handle_read_body(const boost::system::error_code& error) {
-		DEBUG && (std::cerr << "handle body " << error << std::endl);
-		if (!error) {
-			DEBUG && (std::cerr << "Got body!" << std::endl);
-			DEBUG && (std::cerr << show_hex(m_readbuf) << std::endl);
-			handle_request();
-			start_read_header();
+	void handle_read_body(const boost::system::error_code& error) {	
+		if (error) {
+			DEBUG && (std::cerr << "handle body " << error << std::endl);
+			return;
 		}
+		DEBUG && (std::cerr << "Got body!" << '\n' << show_hex(m_readbuf) << std::endl);
+		handle_request();
+		start_read_header();
 	}
 
 	/**
@@ -131,15 +135,15 @@ private:
 			// log.warn("bad message, could not unpack");
 			return;
 		}
-		ControlPointer req = m_framed_control.get_msg();
-		m_delta_ref.push_front(*req);
+		ControlPointer req = m_framed_control.get_payload();
+		m_edit_ref.push_front(*req);
 	}
 
 };
 
 struct BridgeClient::BridgeClientImpl { 
 	tcp::resolver m_resolver;
-	EditDeque m_delta;
+	edit_deque m_edit;
 	std::string m_host;
 	std::string m_service;
 
@@ -163,7 +167,7 @@ struct BridgeClient::BridgeClientImpl {
 		  /** logger.warn("could not resolve m_host {} and port {}", m_host, port); */
 		  return;
 	  }
-	  BridgeConnection::Pointer connection = BridgeConnection::create(m_resolver.get_io_service(), m_delta);
+	  BridgeConnection::Pointer connection = BridgeConnection::create(m_resolver.get_io_service(), m_edit);
 	  connection->start(it);
 	}
 
