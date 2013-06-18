@@ -1,7 +1,45 @@
 
+cmake_minimum_required (VERSION 2.8)
+
 project (THE_LIFT)
 
-set (THE_LIFT_SRCS the-lift.cc BridgeClient.cc CdbMsg.pb.cc AssemblyInterface.pb.cc XsdTypes.pb.cc)
 
-add_executable (the-lift ${THE_LIFT_SRCS})
+
+FILE(GLOB THE_LIFT_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+                                 "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
+FILE(GLOB THE_LIFT_HEAD RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+                                 "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+
+set (THE_LIFT_VERSION_MAJOR 1)
+set (THE_LIFT_VERSION_MINOR 0)
+
+include_directories("${PROJECT_SOURCE_DIR}")
+
+add_executable (the-lift ${THE_LIFT_SRCS} ${THE_LIFT_HEAD})
+
+set(Boost_USE_STATIC_LIBS        ON)
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+FIND_PACKAGE(Boost COMPONENTS system date_time regex thread chrono program_options)
+IF (Boost_FOUND)
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+	ADD_DEFINITIONS( "-DHAS_BOOST" )
+	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+	TARGET_LINK_LIBRARIES(the-lift ${Boost_LIBRARIES})
+ENDIF()
+
+SET(PROTOBUF_SRC_ROOT_FOLDER "C:/protobuf/protobuf-2.5.0")
+FIND_PACKAGE(Protobuf)
+IF (PROTOBUF_FOUND)
+	INCLUDE_DIRECTORIES(${PROTOBUF_INCLUDE_DIRS})
+	ADD_DEFINITIONS( "-DHAS_PROTOBUF" )
+	TARGET_LINK_LIBRARIES(the-lift ${PROTOBUF_LIBRARIES})
+ENDIF()
+
+# Windows specific definitions
+IF (WIN32) 
+	ADD_DEFINITIONS( "-D_SCL_SECURE_NO_WARNINGS" )
+	ADD_DEFINITIONS( "-D_WIN32_WINNT=0x0501" ) # Windows XP target
+ENDIF()
+
 
