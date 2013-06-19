@@ -15,7 +15,7 @@
 #include <boost/thread.hpp>
 #include <boost/program_options.hpp>
 
-#include "CdbMsg.pb.h"
+#include "gen/MetaLinkMsg.pb.h"
 #include "BridgeClient.h"
 
 /**

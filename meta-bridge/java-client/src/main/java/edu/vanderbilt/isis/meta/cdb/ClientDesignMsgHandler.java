@@ -1,7 +1,7 @@
 package edu.vanderbilt.isis.meta.cdb;
 
 import com.google.protobuf.TextFormat;
-import edu.vanderbilt.isis.meta.CdbMsg;
+import edu.vanderbilt.isis.meta.MetaLinkMsg;
 import io.netty.buffer.BufUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -17,22 +17,22 @@ import java.nio.charset.Charset;
 
 
 // @Sharable
-public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Control> {
+public class ClientDesignMsgHandler extends ChannelInboundMessageHandlerAdapter<MetaLinkMsg.Edit> {
     private static final Logger logger = LoggerFactory
             .getLogger(ClientDesignMsgHandler.class);
-    final CdbMsg.Control message;
+    final MetaLinkMsg.Edit message;
 
-    public ClientDesignMsgHandler(final CdbMsg.Control message) {
+    public ClientDesignMsgHandler(final MetaLinkMsg.Edit message) {
         this.message = message;
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext channelHandlerContext, CdbMsg.Control in) throws Exception {
+    public void messageReceived(ChannelHandlerContext channelHandlerContext, MetaLinkMsg.Edit in) throws Exception {
         logger.info("message received {}\n{}", Integer.toHexString(in.hashCode()), in);
-        for (final CdbMsg.PayloadRaw item : in.getPayloadList()) {
+        for (final MetaLinkMsg.RawPayload item : in.getRawList()) {
             switch (item.getEncoding()) {
                 case PROTOBUF: {
-                    final CdbMsg.Payload payload = CdbMsg.Payload.newBuilder()
+                    final MetaLinkMsg.Payload payload = MetaLinkMsg.Payload.newBuilder()
                             .mergeFrom(item.getPayload())
                             .build();
                     logger.info("protobuf {} \n{}", Integer.toHexString(in.hashCode()), payload);

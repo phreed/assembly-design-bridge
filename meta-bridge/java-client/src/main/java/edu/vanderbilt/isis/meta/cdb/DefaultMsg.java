@@ -2,7 +2,7 @@ package edu.vanderbilt.isis.meta.cdb;
 
 import com.google.protobuf.TextFormat;
 import edu.vanderbilt.isis.meta.AssemblyInterface;
-import edu.vanderbilt.isis.meta.CdbMsg;
+import edu.vanderbilt.isis.meta.MetaLinkMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public enum DefaultMsg {
     private static final Logger logger = LoggerFactory
             .getLogger(DefaultMsg.class);
 
-    final CdbMsg.Control message;
+    final MetaLinkMsg.Edit message;
 
     private DefaultMsg() {
 
@@ -29,22 +29,22 @@ public enum DefaultMsg {
                         .setName("FuelTank12345")
                         .build();
 
-        final CdbMsg.Payload payload =
-                CdbMsg.Payload.newBuilder()
+        final MetaLinkMsg.Payload payload =
+                MetaLinkMsg.Payload.newBuilder()
                         .addCadComponent(cadComponentType)
                         .build();
 
-        final CdbMsg.PayloadRaw payloadRaw =
-                CdbMsg.PayloadRaw.newBuilder()
-                        .setEncoding(CdbMsg.PayloadRaw.EncodingType.PROTOBUF)
+        final MetaLinkMsg.RawPayload rawPayload =
+                MetaLinkMsg.RawPayload.newBuilder()
+                        .setEncoding(MetaLinkMsg.RawPayload.EncodingType.PROTOBUF)
                         .setPayload(payload.toByteString())
                         .build();
 
         this.message =
-                CdbMsg.Control.newBuilder()
-                        .setAction(CdbMsg.Control.ActionType.UPDATE)
+                MetaLinkMsg.Edit.newBuilder()
+                        .setAction(MetaLinkMsg.Edit.ActionType.EDIT)
                         .addTopic("cdb")
-                        .addPayload(payloadRaw)
+                        .addRaw(rawPayload)
                         .build();
     }
 
@@ -58,7 +58,7 @@ public enum DefaultMsg {
     }
 
 
-    public CdbMsg.Control asMessage() {
+    public MetaLinkMsg.Edit asMessage() {
         return this.message;
     }
 }

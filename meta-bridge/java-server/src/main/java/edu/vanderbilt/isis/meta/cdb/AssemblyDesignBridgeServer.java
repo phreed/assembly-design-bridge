@@ -1,6 +1,6 @@
 package edu.vanderbilt.isis.meta.cdb;
 
-import edu.vanderbilt.isis.meta.CdbMsg;
+import edu.vanderbilt.isis.meta.MetaLinkMsg;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ChannelInitializer;
@@ -126,7 +126,7 @@ public class AssemblyDesignBridgeServer {
                     pipe.addLast("frameEncoder", new MagicLengthFrameEncoder());
 
                     pipe.addLast("protobufDecoder",
-                            new ProtobufDecoder(CdbMsg.Control.getDefaultInstance()));
+                            new ProtobufDecoder(MetaLinkMsg.Edit.getDefaultInstance()));
                     pipe.addLast("protobufEncoder", new ProtobufEncoder());
 
                     pipe.addLast("distributor", new DesignMsgHandler());

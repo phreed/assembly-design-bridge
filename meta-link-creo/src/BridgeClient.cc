@@ -8,7 +8,7 @@
 
 #include "BridgeClient.h"
 #include "FramedEdit.h"
-#include "CdbMsg.pb.h"
+#include "gen/MetaLinkMsg.pb.h"
 
 #include <cassert>
 #include <iostream>
@@ -41,7 +41,7 @@ namespace pb = google::protobuf;
 class BridgeConnection : public boost::enable_shared_from_this<BridgeConnection> {
 public:
 	typedef boost::shared_ptr<BridgeConnection> Pointer;
-    typedef boost::shared_ptr<meta::Control> EditPointer;
+    typedef boost::shared_ptr<meta::Edit> EditPointer;
     typedef std::deque<EditPointer> EditDeque;
 
 	typedef boost::shared_ptr<meta::Payload> PayloadtPointer;
@@ -67,11 +67,11 @@ public:
 private:
 	tcp::socket m_socket;
 	EditDeque& m_edit_ref;
-	FramedEdit<meta::Control> m_framed_control;
+	FramedEdit<meta::Edit> m_framed_Edit;
 
 	BridgeConnection(asio::io_service& io_service, EditDeque& edit) :
-			m_socket(io_service), m_edit_ref(edit), m_framed_control(
-					boost::shared_ptr<meta::Control>(new meta::Control())) {
+			m_socket(io_service), m_edit_ref(edit), m_framed_Edit(
+					boost::shared_ptr<meta::Edit>(new meta::Edit())) {
 	}
 
 	void handle_connect(const boost::system::error_code& error) {
@@ -82,8 +82,8 @@ private:
 	}
 
 	void start_read_header() {
-		m_framed_control.resize_input_buffer_for_header();
-		asio::async_read(m_socket, m_framed_control.get_input_buffer_for_header(),
+		m_framed_Edit.resize_input_buffer_for_header();
+		asio::async_read(m_socket, m_framed_Edit.get_input_buffer_for_header(),
 				boost::bind(&BridgeConnection::handle_read_header,
 						shared_from_this(), asio::placeholders::error));
 	}
@@ -93,8 +93,8 @@ private:
 		if (error) {
 			return;
 		}
-		DEBUG && (std::cerr << "Got header!" << '\n' << m_framed_control.show_input_buffer() << std::endl);
-		unsigned payload_length = m_framed_control.decode_header();
+		DEBUG && (std::cerr << "Got header!" << '\n' << m_framed_Edit.show_input_buffer() << std::endl);
+		unsigned payload_length = m_framed_Edit.decode_header();
 		if (payload_length < 1) {
 			start_read_header();
 			return;
@@ -110,9 +110,9 @@ private:
 	 * The final checksum is not included in the payload length.
 	 */
 	void start_read_body() {
-		m_framed_control.resize_input_buffer_for_load();
+		m_framed_Edit.resize_input_buffer_for_load();
 		
-		asio::async_read(m_socket, m_framed_control.get_input_buffer_for_payload(),
+		asio::async_read(m_socket, m_framed_Edit.get_input_buffer_for_payload(),
 				boost::bind(&BridgeConnection::handle_read_body,
 						shared_from_this(), asio::placeholders::error));
 	}
@@ -122,7 +122,7 @@ private:
 			DEBUG && (std::cerr << "handle body " << error << std::endl);
 			return;
 		}
-		DEBUG && (std::cerr << "Got body!" << '\n' << m_framed_control.show_input_buffer() << std::endl);
+		DEBUG && (std::cerr << "Got body!" << '\n' << m_framed_Edit.show_input_buffer() << std::endl);
 		handle_request();
 		start_read_header();
 	}
@@ -132,22 +132,22 @@ private:
 	 * TODO: This is where the call to CREO is made.
 	 */
 	void handle_request() {
-		bool success = m_framed_control.unpack();
+		bool success = m_framed_Edit.unpack();
 		if (!success) {
 			DEBUG && (std::cerr << "handle request could not unpack " << std::endl);
 			// log.warn("bad message, could not unpack");
 			return;
 		}
-		EditPointer edit = m_framed_control.get_load();
+		EditPointer edit = m_framed_Edit.get_load();
 		std::cout << "edit " << edit << std::endl;
 		m_edit_ref.push_front(edit);
 
-		pb::RepeatedPtrField< meta::PayloadRaw > prl = edit->payload();
+		pb::RepeatedPtrField< meta::RawPayload > prl = edit->raw();
 		for (int ix=0; ix < prl.size(); ++ix) {
-			meta::PayloadRaw pr = prl.Get(ix);
+			meta::RawPayload pr = prl.Get(ix);
 			const std::string payloadBytes = pr.payload();
 			switch (pr.encoding()) {
-			case meta::PayloadRaw_EncodingType_PROTOBUF: 
+			case meta::RawPayload_EncodingType_PROTOBUF: 
 				{
 				meta::Payload pay;
 				pay.ParseFromString(payloadBytes);
@@ -156,7 +156,7 @@ private:
 				std::cout << "payload [" << ix << "]\n" << display << std::endl;
 				break;														   
 				}
-			case  meta::PayloadRaw_EncodingType_XML: 
+			case  meta::RawPayload_EncodingType_XML: 
 				{
 					DEBUG && (std::cout << "xml string supplied \n" << payloadBytes << std::endl);
 					break;

@@ -1,7 +1,7 @@
 package edu.vanderbilt.isis.meta.cdb;
 
 import com.google.protobuf.TextFormat;
-import edu.vanderbilt.isis.meta.CdbMsg;
+import edu.vanderbilt.isis.meta.MetaLinkMsg;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -29,9 +29,9 @@ public class AssemblyDesignBridgeClient {
 
     private final String host;
     private final int port;
-    private final CdbMsg.Control message;
+    private final MetaLinkMsg.Edit message;
 
-    public AssemblyDesignBridgeClient(final String host, final int port, final CdbMsg.Control message) {
+    public AssemblyDesignBridgeClient(final String host, final int port, final MetaLinkMsg.Edit message) {
         this.host = host;
         this.port = port;
         this.message = message;
@@ -132,7 +132,7 @@ public class AssemblyDesignBridgeClient {
                 final FileInputStream inputStream = new FileInputStream(messageFile);
                 try {
                     final String messageStr = IOUtils.toString(inputStream);
-                    final CdbMsg.Control message = parseString(messageStr);
+                    final MetaLinkMsg.Edit message = parseString(messageStr);
                     assemblyDesignBridgeClient = new AssemblyDesignBridgeClient(host, port, message);
                 } finally {
                     inputStream.close();
@@ -146,9 +146,9 @@ public class AssemblyDesignBridgeClient {
         }
     }
 
-    public static CdbMsg.Control parseString(final String message) {
-        final CdbMsg.Control.Builder builder = CdbMsg.Control.newBuilder();
-        builder.setAction(CdbMsg.Control.ActionType.UPDATE);
+    public static MetaLinkMsg.Edit parseString(final String message) {
+        final MetaLinkMsg.Edit.Builder builder = MetaLinkMsg.Edit.newBuilder();
+        builder.setAction(MetaLinkMsg.Edit.ActionType.EDIT);
         try {
             TextFormat.merge(message, builder);
         } catch (TextFormat.ParseException ex) {
@@ -188,7 +188,7 @@ public class AssemblyDesignBridgeClient {
                     pipe.addLast("frameEncoder", new MagicLengthFrameEncoder());
 
                     pipe.addLast("protobufDecoder",
-                            new ProtobufDecoder(CdbMsg.Control.getDefaultInstance()));
+                            new ProtobufDecoder(MetaLinkMsg.Edit.getDefaultInstance()));
                     pipe.addLast("protobufEncoder", new ProtobufEncoder());
 
                     // pipe.addLast("executor", foo);

@@ -1,6 +1,6 @@
 package edu.vanderbilt.isis.meta.cdb;
 
-import edu.vanderbilt.isis.meta.CdbMsg;
+import edu.vanderbilt.isis.meta.MetaLinkMsg;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg.Control> {
+public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<MetaLinkMsg.Edit> {
     private static final Logger logger = LoggerFactory
             .getLogger(AssemblyDesignBridgeServer.class);
 
@@ -21,11 +21,11 @@ public class DesignMsgHandler extends ChannelInboundMessageHandlerAdapter<CdbMsg
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, CdbMsg.Control req) {
+    public void messageReceived(ChannelHandlerContext ctx, MetaLinkMsg.Edit req) {
         logger.debug("handling \n{}", req);
         DesignMsgDistributor.INSTANCE.send(ctx, req);
         /*
-        final CdbMsg.Message res = CdbMsg.Message.newBuilder()
+        final MetaLinkMsg.Message res = MetaLinkMsg.Message.newBuilder()
                 .setType(req.getType())
                 .setCadComponent(req.getCadComponent())
                 .build();

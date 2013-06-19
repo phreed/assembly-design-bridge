@@ -67,8 +67,8 @@
                       <mkdir dir="${target.csharp.path}"/>
 		      <exec executable="protogen" dir="${protobuf.source}">
                         <arg value="-d"/>
-            <arg value="-o:${basedir}/${target.csharp.path}/CdbMsg.cs"/>
-                        <arg value="-i:CdbMsg.proto"/>
+            <arg value="-o:${basedir}/${target.csharp.path}/MetaLinkMsg.cs"/>
+                        <arg value="-i:MetaLinkMsg.proto"/>
                       </exec>
                     </tasks>
                   </configuration>

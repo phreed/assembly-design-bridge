@@ -1,0 +1,110 @@
+ 
+package edu.vanderbilt.isis.meta;
+
+/**
+* Advanced Vehicle Make (AVM) META interactive communications.
+* This is the schema for communication through the Live-Sync
+* Component Design Bridge (CDB).
+* There are two main messages, the header which contains
+* information used for routing and the payload which is
+* processed by the end-points.
+*/
+
+import "XsdTypes.proto";
+import "AssemblyInterface.proto";
+
+/**
+* This message describes the information which may be
+* used for routing of messages.
+* 
+*/
+message Edit {
+    enum ActionType {
+      /** do whatever is needed to dispose of the items */
+      DISCARD = 0;
+      /** express interest in something */
+      INTEREST = 1;
+      /** express interest in something */
+      DISINTEREST = 2;
+      /** insert new or update all the fields */
+      EDIT = 3;
+    }
+    required ActionType action = 1 [default=EDIT];
+
+    optional ID id = 2;
+    repeated string topic = 3;
+    optional string origin = 4;
+    optional uint32 sequence = 5;
+
+    repeated Notice notices = 6;
+    repeated RawPayload raw = 7;
+
+}
+
+/**
+* Of particular interest is the payload.
+* The payload is actually the Payload message but is
+* represented in bytes so as not to incur the parsing
+* cost prematurely. 
+*/
+message RawPayload {
+    enum ActionType {
+      /** do whatever is needed to dispose of the items */
+      DISCARD = 0;
+      /** insert new or update all the fields */
+      INSERT = 1;
+      /** insert new or update all the fields */
+      REPLACE = 2;
+      /** update the fields explicitly specified */
+      UPDATE = 3;
+    }
+    enum EncodingType {
+      /** XML */
+      XML = 0;
+      /** A protocol buffer representation */
+      PROTOBUF = 1;
+    }
+    required ActionType action = 1 [default=REPLACE];
+    required EncodingType encoding = 2 [default=PROTOBUF];
+    required bytes payload = 3;
+}
+
+/**
+* The payload is a set of objects which have changed.
+* They will be used to perform the requested action.
+* This is the message encoded into the RawPayload::payload
+* field when the RawPayload::encoding is PROTOBUF.
+*/
+message Payload {
+    optional AssembliesType assemblies = 1;
+    repeated CADComponentType cadComponent = 2;
+    repeated ConstraintType cadConstraint = 3;
+}
+
+/**
+* Usually used for reporting faults of various types.
+* May also be used for generating general acknowledgements.
+*/
+message Notice {
+    enum NoticeType {
+      /** the target model was probably damaged */
+      FAIL = 0;
+      /** no part of the request was performed */
+      REJECT = 1;
+      /** there was a severe problem but it "worked" */
+      FAULT = 2;
+      /** there was a problem but the model is still consistent (probably) */
+      WARN = 3;
+      /** something interesting happened */
+      INFO = 4;
+      /** what you asked for was completed */
+      ACK = 5;
+    }
+    required NoticeType type = 1 [default=FAIL];
+    optional ID _id = 2;
+    /** intended for reading by a human */
+    optional string msg = 3;
+    /** intended for processing by machine */
+    optional bytes code = 4;
+}
+
