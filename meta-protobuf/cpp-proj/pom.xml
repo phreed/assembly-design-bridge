@@ -13,7 +13,8 @@
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
      <protobuf.source>${project.parent.build.sourceDirectory}</protobuf.source>
      <target.cpp.path>target/generated-sources/cpp/</target.cpp.path>
-     <usage.creo>${project.parent.build.directory}/meta-link-creo</usage.creo>
+     <usage.creo.one>${project.parent.parent.modules.module.meta-link-creo}</usage.creo.one>
+     <usage.creo>${project.parent.parent.basedir}/meta-link-creo/src</usage.creo>
    </properties>
 
   <artifactId>metalink-protobuf-cpp</artifactId>
@@ -83,8 +84,8 @@
               <phase>install</phase>
               <configuration>
                 <tasks>
-                  <mkdir dir="${usage.creo}/src/gen"/>
-                  <copy todir="../dest/dir">
+                  <mkdir dir="${usage.creo}/gen"/>
+		  <copy todir="${usage.creo}/gen">
                       <fileset dir="${target.cpp.path}">
                         <exclude name="**/*.java"/>
                       </fileset>

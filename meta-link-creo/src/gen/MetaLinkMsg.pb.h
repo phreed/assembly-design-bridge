@@ -42,17 +42,18 @@ void protobuf_ShutdownFile_MetaLinkMsg_2eproto();
 class Edit;
 class RawPayload;
 class Payload;
+class Environment;
 class Notice;
 
 enum Edit_ActionType {
   Edit_ActionType_DISCARD = 0,
   Edit_ActionType_INTEREST = 1,
   Edit_ActionType_DISINTEREST = 2,
-  Edit_ActionType_EDIT = 3
+  Edit_ActionType_POST = 3
 };
 bool Edit_ActionType_IsValid(int value);
 const Edit_ActionType Edit_ActionType_ActionType_MIN = Edit_ActionType_DISCARD;
-const Edit_ActionType Edit_ActionType_ActionType_MAX = Edit_ActionType_EDIT;
+const Edit_ActionType Edit_ActionType_ActionType_MAX = Edit_ActionType_POST;
 const int Edit_ActionType_ActionType_ARRAYSIZE = Edit_ActionType_ActionType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Edit_ActionType_descriptor();
@@ -88,11 +89,12 @@ inline bool RawPayload_ActionType_Parse(
 }
 enum RawPayload_EncodingType {
   RawPayload_EncodingType_XML = 0,
-  RawPayload_EncodingType_PROTOBUF = 1
+  RawPayload_EncodingType_PROTOBUF = 1,
+  RawPayload_EncodingType_ENVIRONMENT = 2
 };
 bool RawPayload_EncodingType_IsValid(int value);
 const RawPayload_EncodingType RawPayload_EncodingType_EncodingType_MIN = RawPayload_EncodingType_XML;
-const RawPayload_EncodingType RawPayload_EncodingType_EncodingType_MAX = RawPayload_EncodingType_PROTOBUF;
+const RawPayload_EncodingType RawPayload_EncodingType_EncodingType_MAX = RawPayload_EncodingType_ENVIRONMENT;
 const int RawPayload_EncodingType_EncodingType_ARRAYSIZE = RawPayload_EncodingType_EncodingType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* RawPayload_EncodingType_descriptor();
@@ -106,16 +108,18 @@ inline bool RawPayload_EncodingType_Parse(
     RawPayload_EncodingType_descriptor(), name, value);
 }
 enum Notice_NoticeType {
-  Notice_NoticeType_FAIL = 0,
-  Notice_NoticeType_REJECT = 1,
-  Notice_NoticeType_FAULT = 2,
-  Notice_NoticeType_WARN = 3,
-  Notice_NoticeType_INFO = 4,
-  Notice_NoticeType_ACK = 5
+  Notice_NoticeType_BACK = 0,
+  Notice_NoticeType_ACK = 1,
+  Notice_NoticeType_DONE = 2,
+  Notice_NoticeType_INFO = 3,
+  Notice_NoticeType_WARN = 4,
+  Notice_NoticeType_FAULT = 5,
+  Notice_NoticeType_REJECT = 6,
+  Notice_NoticeType_FAIL = 7
 };
 bool Notice_NoticeType_IsValid(int value);
-const Notice_NoticeType Notice_NoticeType_NoticeType_MIN = Notice_NoticeType_FAIL;
-const Notice_NoticeType Notice_NoticeType_NoticeType_MAX = Notice_NoticeType_ACK;
+const Notice_NoticeType Notice_NoticeType_NoticeType_MIN = Notice_NoticeType_BACK;
+const Notice_NoticeType Notice_NoticeType_NoticeType_MAX = Notice_NoticeType_FAIL;
 const int Notice_NoticeType_NoticeType_ARRAYSIZE = Notice_NoticeType_NoticeType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Notice_NoticeType_descriptor();
@@ -186,7 +190,7 @@ class Edit : public ::google::protobuf::Message {
   static const ActionType DISCARD = Edit_ActionType_DISCARD;
   static const ActionType INTEREST = Edit_ActionType_INTEREST;
   static const ActionType DISINTEREST = Edit_ActionType_DISINTEREST;
-  static const ActionType EDIT = Edit_ActionType_EDIT;
+  static const ActionType POST = Edit_ActionType_POST;
   static inline bool ActionType_IsValid(int value) {
     return Edit_ActionType_IsValid(value);
   }
@@ -210,7 +214,7 @@ class Edit : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = EDIT];
+  // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = POST];
   inline bool has_action() const;
   inline void clear_action();
   static const int kActionFieldNumber = 1;
@@ -399,6 +403,7 @@ class RawPayload : public ::google::protobuf::Message {
   typedef RawPayload_EncodingType EncodingType;
   static const EncodingType XML = RawPayload_EncodingType_XML;
   static const EncodingType PROTOBUF = RawPayload_EncodingType_PROTOBUF;
+  static const EncodingType ENVIRONMENT = RawPayload_EncodingType_ENVIRONMENT;
   static inline bool EncodingType_IsValid(int value) {
     return RawPayload_EncodingType_IsValid(value);
   }
@@ -538,29 +543,41 @@ class Payload : public ::google::protobuf::Message {
   inline ::edu::vanderbilt::isis::meta::AssembliesType* release_assemblies();
   inline void set_allocated_assemblies(::edu::vanderbilt::isis::meta::AssembliesType* assemblies);
 
-  // repeated .edu.vanderbilt.isis.meta.CADComponentType cadComponent = 2;
-  inline int cadcomponent_size() const;
-  inline void clear_cadcomponent();
-  static const int kCadComponentFieldNumber = 2;
-  inline const ::edu::vanderbilt::isis::meta::CADComponentType& cadcomponent(int index) const;
-  inline ::edu::vanderbilt::isis::meta::CADComponentType* mutable_cadcomponent(int index);
-  inline ::edu::vanderbilt::isis::meta::CADComponentType* add_cadcomponent();
+  // repeated .edu.vanderbilt.isis.meta.CADComponentType components = 2;
+  inline int components_size() const;
+  inline void clear_components();
+  static const int kComponentsFieldNumber = 2;
+  inline const ::edu::vanderbilt::isis::meta::CADComponentType& components(int index) const;
+  inline ::edu::vanderbilt::isis::meta::CADComponentType* mutable_components(int index);
+  inline ::edu::vanderbilt::isis::meta::CADComponentType* add_components();
   inline const ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::CADComponentType >&
-      cadcomponent() const;
+      components() const;
   inline ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::CADComponentType >*
-      mutable_cadcomponent();
+      mutable_components();
 
-  // repeated .edu.vanderbilt.isis.meta.ConstraintType cadConstraint = 3;
-  inline int cadconstraint_size() const;
-  inline void clear_cadconstraint();
-  static const int kCadConstraintFieldNumber = 3;
-  inline const ::edu::vanderbilt::isis::meta::ConstraintType& cadconstraint(int index) const;
-  inline ::edu::vanderbilt::isis::meta::ConstraintType* mutable_cadconstraint(int index);
-  inline ::edu::vanderbilt::isis::meta::ConstraintType* add_cadconstraint();
+  // repeated .edu.vanderbilt.isis.meta.ConstraintType constraints = 3;
+  inline int constraints_size() const;
+  inline void clear_constraints();
+  static const int kConstraintsFieldNumber = 3;
+  inline const ::edu::vanderbilt::isis::meta::ConstraintType& constraints(int index) const;
+  inline ::edu::vanderbilt::isis::meta::ConstraintType* mutable_constraints(int index);
+  inline ::edu::vanderbilt::isis::meta::ConstraintType* add_constraints();
   inline const ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ConstraintType >&
-      cadconstraint() const;
+      constraints() const;
   inline ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ConstraintType >*
-      mutable_cadconstraint();
+      mutable_constraints();
+
+  // repeated .edu.vanderbilt.isis.meta.ParametricParametersType parameters = 4;
+  inline int parameters_size() const;
+  inline void clear_parameters();
+  static const int kParametersFieldNumber = 4;
+  inline const ::edu::vanderbilt::isis::meta::ParametricParametersType& parameters(int index) const;
+  inline ::edu::vanderbilt::isis::meta::ParametricParametersType* mutable_parameters(int index);
+  inline ::edu::vanderbilt::isis::meta::ParametricParametersType* add_parameters();
+  inline const ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ParametricParametersType >&
+      parameters() const;
+  inline ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ParametricParametersType >*
+      mutable_parameters();
 
   // @@protoc_insertion_point(class_scope:edu.vanderbilt.isis.meta.Payload)
  private:
@@ -570,11 +587,12 @@ class Payload : public ::google::protobuf::Message {
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::edu::vanderbilt::isis::meta::AssembliesType* assemblies_;
-  ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::CADComponentType > cadcomponent_;
-  ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ConstraintType > cadconstraint_;
+  ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::CADComponentType > components_;
+  ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ConstraintType > constraints_;
+  ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ParametricParametersType > parameters_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_MetaLinkMsg_2eproto();
   friend void protobuf_AssignDesc_MetaLinkMsg_2eproto();
@@ -582,6 +600,110 @@ class Payload : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static Payload* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Environment : public ::google::protobuf::Message {
+ public:
+  Environment();
+  virtual ~Environment();
+
+  Environment(const Environment& from);
+
+  inline Environment& operator=(const Environment& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Environment& default_instance();
+
+  void Swap(Environment* other);
+
+  // implements Message ----------------------------------------------
+
+  Environment* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Environment& from);
+  void MergeFrom(const Environment& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // repeated string value = 2;
+  inline int value_size() const;
+  inline void clear_value();
+  static const int kValueFieldNumber = 2;
+  inline const ::std::string& value(int index) const;
+  inline ::std::string* mutable_value(int index);
+  inline void set_value(int index, const ::std::string& value);
+  inline void set_value(int index, const char* value);
+  inline void set_value(int index, const char* value, size_t size);
+  inline ::std::string* add_value();
+  inline void add_value(const ::std::string& value);
+  inline void add_value(const char* value);
+  inline void add_value(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& value() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_value();
+
+  // @@protoc_insertion_point(class_scope:edu.vanderbilt.isis.meta.Environment)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* name_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> value_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_MetaLinkMsg_2eproto();
+  friend void protobuf_AssignDesc_MetaLinkMsg_2eproto();
+  friend void protobuf_ShutdownFile_MetaLinkMsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Environment* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -638,12 +760,14 @@ class Notice : public ::google::protobuf::Message {
   // nested types ----------------------------------------------------
 
   typedef Notice_NoticeType NoticeType;
-  static const NoticeType FAIL = Notice_NoticeType_FAIL;
-  static const NoticeType REJECT = Notice_NoticeType_REJECT;
-  static const NoticeType FAULT = Notice_NoticeType_FAULT;
-  static const NoticeType WARN = Notice_NoticeType_WARN;
-  static const NoticeType INFO = Notice_NoticeType_INFO;
+  static const NoticeType BACK = Notice_NoticeType_BACK;
   static const NoticeType ACK = Notice_NoticeType_ACK;
+  static const NoticeType DONE = Notice_NoticeType_DONE;
+  static const NoticeType INFO = Notice_NoticeType_INFO;
+  static const NoticeType WARN = Notice_NoticeType_WARN;
+  static const NoticeType FAULT = Notice_NoticeType_FAULT;
+  static const NoticeType REJECT = Notice_NoticeType_REJECT;
+  static const NoticeType FAIL = Notice_NoticeType_FAIL;
   static inline bool NoticeType_IsValid(int value) {
     return Notice_NoticeType_IsValid(value);
   }
@@ -667,7 +791,7 @@ class Notice : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = FAIL];
+  // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = BACK];
   inline bool has_type() const;
   inline void clear_type();
   static const int kTypeFieldNumber = 1;
@@ -742,7 +866,7 @@ class Notice : public ::google::protobuf::Message {
 
 // Edit
 
-// required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = EDIT];
+// required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = POST];
 inline bool Edit::has_action() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1151,61 +1275,204 @@ inline void Payload::set_allocated_assemblies(::edu::vanderbilt::isis::meta::Ass
   }
 }
 
-// repeated .edu.vanderbilt.isis.meta.CADComponentType cadComponent = 2;
-inline int Payload::cadcomponent_size() const {
-  return cadcomponent_.size();
+// repeated .edu.vanderbilt.isis.meta.CADComponentType components = 2;
+inline int Payload::components_size() const {
+  return components_.size();
 }
-inline void Payload::clear_cadcomponent() {
-  cadcomponent_.Clear();
+inline void Payload::clear_components() {
+  components_.Clear();
 }
-inline const ::edu::vanderbilt::isis::meta::CADComponentType& Payload::cadcomponent(int index) const {
-  return cadcomponent_.Get(index);
+inline const ::edu::vanderbilt::isis::meta::CADComponentType& Payload::components(int index) const {
+  return components_.Get(index);
 }
-inline ::edu::vanderbilt::isis::meta::CADComponentType* Payload::mutable_cadcomponent(int index) {
-  return cadcomponent_.Mutable(index);
+inline ::edu::vanderbilt::isis::meta::CADComponentType* Payload::mutable_components(int index) {
+  return components_.Mutable(index);
 }
-inline ::edu::vanderbilt::isis::meta::CADComponentType* Payload::add_cadcomponent() {
-  return cadcomponent_.Add();
+inline ::edu::vanderbilt::isis::meta::CADComponentType* Payload::add_components() {
+  return components_.Add();
 }
 inline const ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::CADComponentType >&
-Payload::cadcomponent() const {
-  return cadcomponent_;
+Payload::components() const {
+  return components_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::CADComponentType >*
-Payload::mutable_cadcomponent() {
-  return &cadcomponent_;
+Payload::mutable_components() {
+  return &components_;
 }
 
-// repeated .edu.vanderbilt.isis.meta.ConstraintType cadConstraint = 3;
-inline int Payload::cadconstraint_size() const {
-  return cadconstraint_.size();
+// repeated .edu.vanderbilt.isis.meta.ConstraintType constraints = 3;
+inline int Payload::constraints_size() const {
+  return constraints_.size();
 }
-inline void Payload::clear_cadconstraint() {
-  cadconstraint_.Clear();
+inline void Payload::clear_constraints() {
+  constraints_.Clear();
 }
-inline const ::edu::vanderbilt::isis::meta::ConstraintType& Payload::cadconstraint(int index) const {
-  return cadconstraint_.Get(index);
+inline const ::edu::vanderbilt::isis::meta::ConstraintType& Payload::constraints(int index) const {
+  return constraints_.Get(index);
 }
-inline ::edu::vanderbilt::isis::meta::ConstraintType* Payload::mutable_cadconstraint(int index) {
-  return cadconstraint_.Mutable(index);
+inline ::edu::vanderbilt::isis::meta::ConstraintType* Payload::mutable_constraints(int index) {
+  return constraints_.Mutable(index);
 }
-inline ::edu::vanderbilt::isis::meta::ConstraintType* Payload::add_cadconstraint() {
-  return cadconstraint_.Add();
+inline ::edu::vanderbilt::isis::meta::ConstraintType* Payload::add_constraints() {
+  return constraints_.Add();
 }
 inline const ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ConstraintType >&
-Payload::cadconstraint() const {
-  return cadconstraint_;
+Payload::constraints() const {
+  return constraints_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ConstraintType >*
-Payload::mutable_cadconstraint() {
-  return &cadconstraint_;
+Payload::mutable_constraints() {
+  return &constraints_;
+}
+
+// repeated .edu.vanderbilt.isis.meta.ParametricParametersType parameters = 4;
+inline int Payload::parameters_size() const {
+  return parameters_.size();
+}
+inline void Payload::clear_parameters() {
+  parameters_.Clear();
+}
+inline const ::edu::vanderbilt::isis::meta::ParametricParametersType& Payload::parameters(int index) const {
+  return parameters_.Get(index);
+}
+inline ::edu::vanderbilt::isis::meta::ParametricParametersType* Payload::mutable_parameters(int index) {
+  return parameters_.Mutable(index);
+}
+inline ::edu::vanderbilt::isis::meta::ParametricParametersType* Payload::add_parameters() {
+  return parameters_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ParametricParametersType >&
+Payload::parameters() const {
+  return parameters_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::edu::vanderbilt::isis::meta::ParametricParametersType >*
+Payload::mutable_parameters() {
+  return &parameters_;
+}
+
+// -------------------------------------------------------------------
+
+// Environment
+
+// required string name = 1;
+inline bool Environment::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Environment::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Environment::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Environment::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& Environment::name() const {
+  return *name_;
+}
+inline void Environment::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void Environment::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void Environment::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Environment::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* Environment::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Environment::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// repeated string value = 2;
+inline int Environment::value_size() const {
+  return value_.size();
+}
+inline void Environment::clear_value() {
+  value_.Clear();
+}
+inline const ::std::string& Environment::value(int index) const {
+  return value_.Get(index);
+}
+inline ::std::string* Environment::mutable_value(int index) {
+  return value_.Mutable(index);
+}
+inline void Environment::set_value(int index, const ::std::string& value) {
+  value_.Mutable(index)->assign(value);
+}
+inline void Environment::set_value(int index, const char* value) {
+  value_.Mutable(index)->assign(value);
+}
+inline void Environment::set_value(int index, const char* value, size_t size) {
+  value_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Environment::add_value() {
+  return value_.Add();
+}
+inline void Environment::add_value(const ::std::string& value) {
+  value_.Add()->assign(value);
+}
+inline void Environment::add_value(const char* value) {
+  value_.Add()->assign(value);
+}
+inline void Environment::add_value(const char* value, size_t size) {
+  value_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+Environment::value() const {
+  return value_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+Environment::mutable_value() {
+  return &value_;
 }
 
 // -------------------------------------------------------------------
 
 // Notice
 
-// required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = FAIL];
+// required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = BACK];
 inline bool Notice::has_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }

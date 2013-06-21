@@ -35,6 +35,9 @@ const ::google::protobuf::EnumDescriptor* RawPayload_EncodingType_descriptor_ = 
 const ::google::protobuf::Descriptor* Payload_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Payload_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Environment_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Environment_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Notice_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Notice_reflection_ = NULL;
@@ -91,10 +94,11 @@ void protobuf_AssignDesc_MetaLinkMsg_2eproto() {
   RawPayload_ActionType_descriptor_ = RawPayload_descriptor_->enum_type(0);
   RawPayload_EncodingType_descriptor_ = RawPayload_descriptor_->enum_type(1);
   Payload_descriptor_ = file->message_type(2);
-  static const int Payload_offsets_[3] = {
+  static const int Payload_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Payload, assemblies_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Payload, cadcomponent_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Payload, cadconstraint_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Payload, components_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Payload, constraints_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Payload, parameters_),
   };
   Payload_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -107,7 +111,23 @@ void protobuf_AssignDesc_MetaLinkMsg_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Payload));
-  Notice_descriptor_ = file->message_type(3);
+  Environment_descriptor_ = file->message_type(3);
+  static const int Environment_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Environment, name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Environment, value_),
+  };
+  Environment_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      Environment_descriptor_,
+      Environment::default_instance_,
+      Environment_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Environment, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Environment, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(Environment));
+  Notice_descriptor_ = file->message_type(4);
   static const int Notice_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Notice, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Notice, _id_),
@@ -145,6 +165,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     Payload_descriptor_, &Payload::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    Environment_descriptor_, &Environment::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     Notice_descriptor_, &Notice::default_instance());
 }
 
@@ -157,6 +179,8 @@ void protobuf_ShutdownFile_MetaLinkMsg_2eproto() {
   delete RawPayload_reflection_;
   delete Payload::default_instance_;
   delete Payload_reflection_;
+  delete Environment::default_instance_;
+  delete Environment_reflection_;
   delete Notice::default_instance_;
   delete Notice_reflection_;
 }
@@ -173,41 +197,47 @@ void protobuf_AddDesc_MetaLinkMsg_2eproto() {
     "\n\021MetaLinkMsg.proto\022\030edu.vanderbilt.isis"
     ".meta\032\016XsdTypes.proto\032\027AssemblyInterface"
     ".proto\"\314\002\n\004Edit\022\?\n\006action\030\001 \002(\0162).edu.va"
-    "nderbilt.isis.meta.Edit.ActionType:\004EDIT"
+    "nderbilt.isis.meta.Edit.ActionType:\004POST"
     "\022(\n\002id\030\002 \001(\0132\034.edu.vanderbilt.isis.meta."
     "ID\022\r\n\005topic\030\003 \003(\t\022\016\n\006origin\030\004 \001(\t\022\020\n\010seq"
     "uence\030\005 \001(\r\0221\n\007notices\030\006 \003(\0132 .edu.vande"
     "rbilt.isis.meta.Notice\0221\n\003raw\030\007 \003(\0132$.ed"
     "u.vanderbilt.isis.meta.RawPayload\"B\n\nAct"
     "ionType\022\013\n\007DISCARD\020\000\022\014\n\010INTEREST\020\001\022\017\n\013DI"
-    "SINTEREST\020\002\022\010\n\004EDIT\020\003\"\235\002\n\nRawPayload\022H\n\006"
+    "SINTEREST\020\002\022\010\n\004POST\020\003\"\256\002\n\nRawPayload\022H\n\006"
     "action\030\001 \002(\0162/.edu.vanderbilt.isis.meta."
     "RawPayload.ActionType:\007REPLACE\022M\n\010encodi"
     "ng\030\002 \002(\01621.edu.vanderbilt.isis.meta.RawP"
     "ayload.EncodingType:\010PROTOBUF\022\017\n\007payload"
     "\030\003 \002(\014\">\n\nActionType\022\013\n\007DISCARD\020\000\022\n\n\006INS"
-    "ERT\020\001\022\013\n\007REPLACE\020\002\022\n\n\006UPDATE\020\003\"%\n\014Encodi"
-    "ngType\022\007\n\003XML\020\000\022\014\n\010PROTOBUF\020\001\"\312\001\n\007Payloa"
-    "d\022<\n\nassemblies\030\001 \001(\0132(.edu.vanderbilt.i"
-    "sis.meta.AssembliesType\022@\n\014cadComponent\030"
-    "\002 \003(\0132*.edu.vanderbilt.isis.meta.CADComp"
-    "onentType\022\?\n\rcadConstraint\030\003 \003(\0132(.edu.v"
-    "anderbilt.isis.meta.ConstraintType\"\333\001\n\006N"
-    "otice\022\?\n\004type\030\001 \002(\0162+.edu.vanderbilt.isi"
-    "s.meta.Notice.NoticeType:\004FAIL\022)\n\003_id\030\002 "
-    "\001(\0132\034.edu.vanderbilt.isis.meta.ID\022\013\n\003msg"
-    "\030\003 \001(\t\022\014\n\004code\030\004 \001(\014\"J\n\nNoticeType\022\010\n\004FA"
-    "IL\020\000\022\n\n\006REJECT\020\001\022\t\n\005FAULT\020\002\022\010\n\004WARN\020\003\022\010\n"
-    "\004INFO\020\004\022\007\n\003ACK\020\005", 1136);
+    "ERT\020\001\022\013\n\007REPLACE\020\002\022\n\n\006UPDATE\020\003\"6\n\014Encodi"
+    "ngType\022\007\n\003XML\020\000\022\014\n\010PROTOBUF\020\001\022\017\n\013ENVIRON"
+    "MENT\020\002\"\216\002\n\007Payload\022<\n\nassemblies\030\001 \001(\0132("
+    ".edu.vanderbilt.isis.meta.AssembliesType"
+    "\022>\n\ncomponents\030\002 \003(\0132*.edu.vanderbilt.is"
+    "is.meta.CADComponentType\022=\n\013constraints\030"
+    "\003 \003(\0132(.edu.vanderbilt.isis.meta.Constra"
+    "intType\022F\n\nparameters\030\004 \003(\01322.edu.vander"
+    "bilt.isis.meta.ParametricParametersType\""
+    "*\n\013Environment\022\014\n\004name\030\001 \002(\t\022\r\n\005value\030\002 "
+    "\003(\t\"\357\001\n\006Notice\022\?\n\004type\030\001 \002(\0162+.edu.vande"
+    "rbilt.isis.meta.Notice.NoticeType:\004BACK\022"
+    ")\n\003_id\030\002 \001(\0132\034.edu.vanderbilt.isis.meta."
+    "ID\022\013\n\003msg\030\003 \001(\t\022\014\n\004code\030\004 \001(\014\"^\n\nNoticeT"
+    "ype\022\010\n\004BACK\020\000\022\007\n\003ACK\020\001\022\010\n\004DONE\020\002\022\010\n\004INFO"
+    "\020\003\022\010\n\004WARN\020\004\022\t\n\005FAULT\020\005\022\n\n\006REJECT\020\006\022\010\n\004F"
+    "AIL\020\007", 1285);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "MetaLinkMsg.proto", &protobuf_RegisterTypes);
   Edit::default_instance_ = new Edit();
   RawPayload::default_instance_ = new RawPayload();
   Payload::default_instance_ = new Payload();
+  Environment::default_instance_ = new Environment();
   Notice::default_instance_ = new Notice();
   Edit::default_instance_->InitAsDefaultInstance();
   RawPayload::default_instance_->InitAsDefaultInstance();
   Payload::default_instance_->InitAsDefaultInstance();
+  Environment::default_instance_->InitAsDefaultInstance();
   Notice::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_MetaLinkMsg_2eproto);
 }
@@ -241,7 +271,7 @@ bool Edit_ActionType_IsValid(int value) {
 const Edit_ActionType Edit::DISCARD;
 const Edit_ActionType Edit::INTEREST;
 const Edit_ActionType Edit::DISINTEREST;
-const Edit_ActionType Edit::EDIT;
+const Edit_ActionType Edit::POST;
 const Edit_ActionType Edit::ActionType_MIN;
 const Edit_ActionType Edit::ActionType_MAX;
 const int Edit::ActionType_ARRAYSIZE;
@@ -340,7 +370,7 @@ bool Edit::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = EDIT];
+      // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = POST];
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -474,7 +504,7 @@ bool Edit::MergePartialFromCodedStream(
 
 void Edit::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = EDIT];
+  // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = POST];
   if (has_action()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->action(), output);
@@ -529,7 +559,7 @@ void Edit::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* Edit::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = EDIT];
+  // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = POST];
   if (has_action()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->action(), target);
@@ -591,7 +621,7 @@ int Edit::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = EDIT];
+    // required .edu.vanderbilt.isis.meta.Edit.ActionType action = 1 [default = POST];
     if (has_action()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->action());
@@ -773,6 +803,7 @@ bool RawPayload_EncodingType_IsValid(int value) {
   switch(value) {
     case 0:
     case 1:
+    case 2:
       return true;
     default:
       return false;
@@ -782,6 +813,7 @@ bool RawPayload_EncodingType_IsValid(int value) {
 #ifndef _MSC_VER
 const RawPayload_EncodingType RawPayload::XML;
 const RawPayload_EncodingType RawPayload::PROTOBUF;
+const RawPayload_EncodingType RawPayload::ENVIRONMENT;
 const RawPayload_EncodingType RawPayload::EncodingType_MIN;
 const RawPayload_EncodingType RawPayload::EncodingType_MAX;
 const int RawPayload::EncodingType_ARRAYSIZE;
@@ -1097,8 +1129,9 @@ void RawPayload::Swap(RawPayload* other) {
 
 #ifndef _MSC_VER
 const int Payload::kAssembliesFieldNumber;
-const int Payload::kCadComponentFieldNumber;
-const int Payload::kCadConstraintFieldNumber;
+const int Payload::kComponentsFieldNumber;
+const int Payload::kConstraintsFieldNumber;
+const int Payload::kParametersFieldNumber;
 #endif  // !_MSC_VER
 
 Payload::Payload()
@@ -1159,8 +1192,9 @@ void Payload::Clear() {
       if (assemblies_ != NULL) assemblies_->::edu::vanderbilt::isis::meta::AssembliesType::Clear();
     }
   }
-  cadcomponent_.Clear();
-  cadconstraint_.Clear();
+  components_.Clear();
+  constraints_.Clear();
+  parameters_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -1180,36 +1214,51 @@ bool Payload::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_cadComponent;
+        if (input->ExpectTag(18)) goto parse_components;
         break;
       }
 
-      // repeated .edu.vanderbilt.isis.meta.CADComponentType cadComponent = 2;
+      // repeated .edu.vanderbilt.isis.meta.CADComponentType components = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_cadComponent:
+         parse_components:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-                input, add_cadcomponent()));
+                input, add_components()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_cadComponent;
-        if (input->ExpectTag(26)) goto parse_cadConstraint;
+        if (input->ExpectTag(18)) goto parse_components;
+        if (input->ExpectTag(26)) goto parse_constraints;
         break;
       }
 
-      // repeated .edu.vanderbilt.isis.meta.ConstraintType cadConstraint = 3;
+      // repeated .edu.vanderbilt.isis.meta.ConstraintType constraints = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_cadConstraint:
+         parse_constraints:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-                input, add_cadconstraint()));
+                input, add_constraints()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_cadConstraint;
+        if (input->ExpectTag(26)) goto parse_constraints;
+        if (input->ExpectTag(34)) goto parse_parameters;
+        break;
+      }
+
+      // repeated .edu.vanderbilt.isis.meta.ParametricParametersType parameters = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_parameters:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_parameters()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(34)) goto parse_parameters;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1238,16 +1287,22 @@ void Payload::SerializeWithCachedSizes(
       1, this->assemblies(), output);
   }
 
-  // repeated .edu.vanderbilt.isis.meta.CADComponentType cadComponent = 2;
-  for (int i = 0; i < this->cadcomponent_size(); i++) {
+  // repeated .edu.vanderbilt.isis.meta.CADComponentType components = 2;
+  for (int i = 0; i < this->components_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, this->cadcomponent(i), output);
+      2, this->components(i), output);
   }
 
-  // repeated .edu.vanderbilt.isis.meta.ConstraintType cadConstraint = 3;
-  for (int i = 0; i < this->cadconstraint_size(); i++) {
+  // repeated .edu.vanderbilt.isis.meta.ConstraintType constraints = 3;
+  for (int i = 0; i < this->constraints_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      3, this->cadconstraint(i), output);
+      3, this->constraints(i), output);
+  }
+
+  // repeated .edu.vanderbilt.isis.meta.ParametricParametersType parameters = 4;
+  for (int i = 0; i < this->parameters_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, this->parameters(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -1265,18 +1320,25 @@ void Payload::SerializeWithCachedSizes(
         1, this->assemblies(), target);
   }
 
-  // repeated .edu.vanderbilt.isis.meta.CADComponentType cadComponent = 2;
-  for (int i = 0; i < this->cadcomponent_size(); i++) {
+  // repeated .edu.vanderbilt.isis.meta.CADComponentType components = 2;
+  for (int i = 0; i < this->components_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        2, this->cadcomponent(i), target);
+        2, this->components(i), target);
   }
 
-  // repeated .edu.vanderbilt.isis.meta.ConstraintType cadConstraint = 3;
-  for (int i = 0; i < this->cadconstraint_size(); i++) {
+  // repeated .edu.vanderbilt.isis.meta.ConstraintType constraints = 3;
+  for (int i = 0; i < this->constraints_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        3, this->cadconstraint(i), target);
+        3, this->constraints(i), target);
+  }
+
+  // repeated .edu.vanderbilt.isis.meta.ParametricParametersType parameters = 4;
+  for (int i = 0; i < this->parameters_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        4, this->parameters(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1298,20 +1360,28 @@ int Payload::ByteSize() const {
     }
 
   }
-  // repeated .edu.vanderbilt.isis.meta.CADComponentType cadComponent = 2;
-  total_size += 1 * this->cadcomponent_size();
-  for (int i = 0; i < this->cadcomponent_size(); i++) {
+  // repeated .edu.vanderbilt.isis.meta.CADComponentType components = 2;
+  total_size += 1 * this->components_size();
+  for (int i = 0; i < this->components_size(); i++) {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->cadcomponent(i));
+        this->components(i));
   }
 
-  // repeated .edu.vanderbilt.isis.meta.ConstraintType cadConstraint = 3;
-  total_size += 1 * this->cadconstraint_size();
-  for (int i = 0; i < this->cadconstraint_size(); i++) {
+  // repeated .edu.vanderbilt.isis.meta.ConstraintType constraints = 3;
+  total_size += 1 * this->constraints_size();
+  for (int i = 0; i < this->constraints_size(); i++) {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->cadconstraint(i));
+        this->constraints(i));
+  }
+
+  // repeated .edu.vanderbilt.isis.meta.ParametricParametersType parameters = 4;
+  total_size += 1 * this->parameters_size();
+  for (int i = 0; i < this->parameters_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->parameters(i));
   }
 
   if (!unknown_fields().empty()) {
@@ -1339,8 +1409,9 @@ void Payload::MergeFrom(const ::google::protobuf::Message& from) {
 
 void Payload::MergeFrom(const Payload& from) {
   GOOGLE_CHECK_NE(&from, this);
-  cadcomponent_.MergeFrom(from.cadcomponent_);
-  cadconstraint_.MergeFrom(from.cadconstraint_);
+  components_.MergeFrom(from.components_);
+  constraints_.MergeFrom(from.constraints_);
+  parameters_.MergeFrom(from.parameters_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_assemblies()) {
       mutable_assemblies()->::edu::vanderbilt::isis::meta::AssembliesType::MergeFrom(from.assemblies());
@@ -1366,11 +1437,14 @@ bool Payload::IsInitialized() const {
   if (has_assemblies()) {
     if (!this->assemblies().IsInitialized()) return false;
   }
-  for (int i = 0; i < cadcomponent_size(); i++) {
-    if (!this->cadcomponent(i).IsInitialized()) return false;
+  for (int i = 0; i < components_size(); i++) {
+    if (!this->components(i).IsInitialized()) return false;
   }
-  for (int i = 0; i < cadconstraint_size(); i++) {
-    if (!this->cadconstraint(i).IsInitialized()) return false;
+  for (int i = 0; i < constraints_size(); i++) {
+    if (!this->constraints(i).IsInitialized()) return false;
+  }
+  for (int i = 0; i < parameters_size(); i++) {
+    if (!this->parameters(i).IsInitialized()) return false;
   }
   return true;
 }
@@ -1378,8 +1452,9 @@ bool Payload::IsInitialized() const {
 void Payload::Swap(Payload* other) {
   if (other != this) {
     std::swap(assemblies_, other->assemblies_);
-    cadcomponent_.Swap(&other->cadcomponent_);
-    cadconstraint_.Swap(&other->cadconstraint_);
+    components_.Swap(&other->components_);
+    constraints_.Swap(&other->constraints_);
+    parameters_.Swap(&other->parameters_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1391,6 +1466,280 @@ void Payload::Swap(Payload* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = Payload_descriptor_;
   metadata.reflection = Payload_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int Environment::kNameFieldNumber;
+const int Environment::kValueFieldNumber;
+#endif  // !_MSC_VER
+
+Environment::Environment()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void Environment::InitAsDefaultInstance() {
+}
+
+Environment::Environment(const Environment& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void Environment::SharedCtor() {
+  _cached_size_ = 0;
+  name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Environment::~Environment() {
+  SharedDtor();
+}
+
+void Environment::SharedDtor() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void Environment::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Environment::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Environment_descriptor_;
+}
+
+const Environment& Environment::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_MetaLinkMsg_2eproto();
+  return *default_instance_;
+}
+
+Environment* Environment::default_instance_ = NULL;
+
+Environment* Environment::New() const {
+  return new Environment;
+}
+
+void Environment::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (has_name()) {
+      if (name_ != &::google::protobuf::internal::kEmptyString) {
+        name_->clear();
+      }
+    }
+  }
+  value_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool Environment::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required string name = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->name().data(), this->name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_value;
+        break;
+      }
+
+      // repeated string value = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_value:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_value()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->value(this->value_size() - 1).data(),
+            this->value(this->value_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_value;
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void Environment::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required string name = 1;
+  if (has_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->name(), output);
+  }
+
+  // repeated string value = 2;
+  for (int i = 0; i < this->value_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    this->value(i).data(), this->value(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->value(i), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* Environment::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required string name = 1;
+  if (has_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->name(), target);
+  }
+
+  // repeated string value = 2;
+  for (int i = 0; i < this->value_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->value(i).data(), this->value(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(2, this->value(i), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int Environment::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required string name = 1;
+    if (has_name()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->name());
+    }
+
+  }
+  // repeated string value = 2;
+  total_size += 1 * this->value_size();
+  for (int i = 0; i < this->value_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->value(i));
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Environment::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const Environment* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const Environment*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Environment::MergeFrom(const Environment& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  value_.MergeFrom(from.value_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_name()) {
+      set_name(from.name());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void Environment::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Environment::CopyFrom(const Environment& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Environment::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  return true;
+}
+
+void Environment::Swap(Environment* other) {
+  if (other != this) {
+    std::swap(name_, other->name_);
+    value_.Swap(&other->value_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata Environment::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Environment_descriptor_;
+  metadata.reflection = Environment_reflection_;
   return metadata;
 }
 
@@ -1409,6 +1758,8 @@ bool Notice_NoticeType_IsValid(int value) {
     case 3:
     case 4:
     case 5:
+    case 6:
+    case 7:
       return true;
     default:
       return false;
@@ -1416,12 +1767,14 @@ bool Notice_NoticeType_IsValid(int value) {
 }
 
 #ifndef _MSC_VER
-const Notice_NoticeType Notice::FAIL;
-const Notice_NoticeType Notice::REJECT;
-const Notice_NoticeType Notice::FAULT;
-const Notice_NoticeType Notice::WARN;
-const Notice_NoticeType Notice::INFO;
+const Notice_NoticeType Notice::BACK;
 const Notice_NoticeType Notice::ACK;
+const Notice_NoticeType Notice::DONE;
+const Notice_NoticeType Notice::INFO;
+const Notice_NoticeType Notice::WARN;
+const Notice_NoticeType Notice::FAULT;
+const Notice_NoticeType Notice::REJECT;
+const Notice_NoticeType Notice::FAIL;
 const Notice_NoticeType Notice::NoticeType_MIN;
 const Notice_NoticeType Notice::NoticeType_MAX;
 const int Notice::NoticeType_ARRAYSIZE;
@@ -1521,7 +1874,7 @@ bool Notice::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = FAIL];
+      // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = BACK];
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -1604,7 +1957,7 @@ bool Notice::MergePartialFromCodedStream(
 
 void Notice::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = FAIL];
+  // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = BACK];
   if (has_type()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->type(), output);
@@ -1639,7 +1992,7 @@ void Notice::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* Notice::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = FAIL];
+  // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = BACK];
   if (has_type()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->type(), target);
@@ -1680,7 +2033,7 @@ int Notice::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = FAIL];
+    // required .edu.vanderbilt.isis.meta.Notice.NoticeType type = 1 [default = BACK];
     if (has_type()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
