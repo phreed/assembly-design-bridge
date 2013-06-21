@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.meta.cdb;
+package edu.vanderbilt.isis.meta.link;
 
 import com.google.protobuf.TextFormat;
 import edu.vanderbilt.isis.meta.MetaLinkMsg;
@@ -44,7 +44,7 @@ public class AssemblyDesignBridgeClient {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        logger.info("starting edu.vanderbilt.isis.meta.cdb");
+        logger.info("starting edu.vanderbilt.isis.meta.link");
 
         final CommandLineParser parser = new BasicParser();
         final Options options = new Options();

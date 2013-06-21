@@ -1,13 +1,9 @@
-package edu.vanderbilt.isis.meta.cdb;
+package edu.vanderbilt.isis.meta.link;
 
-import com.google.protobuf.TextFormat;
 import edu.vanderbilt.isis.meta.AssemblyInterface;
 import edu.vanderbilt.isis.meta.MetaLinkMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 /**
  * User: Fred Eisele
@@ -43,7 +39,7 @@ public enum DefaultMsg {
         this.message =
                 MetaLinkMsg.Edit.newBuilder()
                         .setAction(MetaLinkMsg.Edit.ActionType.POST)
-                        .addTopic("cdb")
+                        .addTopic("link")
                         .addRaw(rawPayload)
                         .build();
     }

@@ -1,4 +1,4 @@
-package edu.vanderbilt.isis.meta.cdb;
+package edu.vanderbilt.isis.meta.link;
 
 import io.netty.buffer.BufUtil;
 import io.netty.buffer.ByteBuf;

@@ -4,8 +4,8 @@
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-     <groupId>edu.vanderbilt.isis.meta</groupId>
-     <artifactId>cdb-protobuf-parent</artifactId>
+     <groupId>edu.vanderbilt.isis.meta.link</groupId>
+     <artifactId>metalink-protobuf-parent</artifactId>
      <version>1.0.0</version>
    </parent>
 
@@ -15,7 +15,7 @@
      <protobuf.source>${project.parent.build.sourceDirectory}</protobuf.source>
    </properties>
 
-  <artifactId>cdb-protobuf-csharp</artifactId>
+  <artifactId>metalink-protobuf-csharp</artifactId>
   <packaging>jar</packaging>
 
   <name>meta protocol buffer message C#</name>

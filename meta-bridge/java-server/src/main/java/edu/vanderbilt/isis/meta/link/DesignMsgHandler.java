@@ -1,7 +1,6 @@
-package edu.vanderbilt.isis.meta.cdb;
+package edu.vanderbilt.isis.meta.link;
 
 import edu.vanderbilt.isis.meta.MetaLinkMsg;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 

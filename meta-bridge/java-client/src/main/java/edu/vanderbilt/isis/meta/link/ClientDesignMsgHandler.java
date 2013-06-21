@@ -1,19 +1,11 @@
-package edu.vanderbilt.isis.meta.cdb;
+package edu.vanderbilt.isis.meta.link;
 
-import com.google.protobuf.TextFormat;
 import edu.vanderbilt.isis.meta.MetaLinkMsg;
-import io.netty.buffer.BufUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.nio.charset.Charset;
 
 
 // @Sharable

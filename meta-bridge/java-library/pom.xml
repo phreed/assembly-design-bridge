@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>edu.vanderbilt.isis.meta</groupId>
-    <artifactId>cdb-java-parent</artifactId>
+    <groupId>edu.vanderbilt.isis.meta.link</groupId>
+    <artifactId>metalink-java-parent</artifactId>
     <version>1.0.0</version>
   </parent>
-  <artifactId>cdb-java-library</artifactId>
-  <name>META CDB java library</name>
+  <artifactId>metalink-java-library</artifactId>
+  <name>META Link java library</name>
   <packaging>jar</packaging>
 
 
