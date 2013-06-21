@@ -1,0 +1,38 @@
+
+# Dependency
+
+You will need some libraries installed.
+
+## Cmake 
+
+Use the msi provided.
+
+## Boost 
+
+Build boost in C:\bost\boost-1.5.3
+
+## Protobuf
+
+Put the tarball in c:\protobuf and extract it there.
+Follow the instructions found in INSTALL.txt.
+
+
+# Build
+
+First from the same directory as this READ.me 
+run cmake to get the VisualStudo project files.
+
+cmake ../src
+
+Then either open the project solution 
+file "META_LINK_CREO.sln", or run "msbuild".
+
+Building with msbuild will need to performed 
+from the Visual Studio Console.
+
+MSBuild.exe meta-link-creo.vcxproj
+
+
+
+
+
