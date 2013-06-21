@@ -10,9 +10,12 @@
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
 
-  <groupId>edu.vanderbilt.isis.meta</groupId>
-  <artifactId>cdb-protobuf-parent</artifactId>
-  <version>1.0.0</version>
+   <parent>
+     <groupId>edu.vanderbilt.isis.meta.link</groupId>
+     <artifactId>metalink-parent</artifactId>
+     <version>1.0.0</version>
+   </parent>
+  <artifactId>metalink-protobuf-parent</artifactId>
   <packaging>pom</packaging>
 
   <name>meta protocol buffer message parent</name>

@@ -148,7 +148,7 @@ public class AssemblyDesignBridgeClient {
 
     public static MetaLinkMsg.Edit parseString(final String message) {
         final MetaLinkMsg.Edit.Builder builder = MetaLinkMsg.Edit.newBuilder();
-        builder.setAction(MetaLinkMsg.Edit.ActionType.EDIT);
+        builder.setAction(MetaLinkMsg.Edit.ActionType.POST);
         try {
             TextFormat.merge(message, builder);
         } catch (TextFormat.ParseException ex) {

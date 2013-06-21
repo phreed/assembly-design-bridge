@@ -31,7 +31,7 @@ public enum DefaultMsg {
 
         final MetaLinkMsg.Payload payload =
                 MetaLinkMsg.Payload.newBuilder()
-                        .addCadComponent(cadComponentType)
+                        .addComponents(cadComponentType)
                         .build();
 
         final MetaLinkMsg.RawPayload rawPayload =
@@ -42,7 +42,7 @@ public enum DefaultMsg {
 
         this.message =
                 MetaLinkMsg.Edit.newBuilder()
-                        .setAction(MetaLinkMsg.Edit.ActionType.EDIT)
+                        .setAction(MetaLinkMsg.Edit.ActionType.POST)
                         .addTopic("cdb")
                         .addRaw(rawPayload)
                         .build();

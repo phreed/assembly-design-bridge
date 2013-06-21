@@ -78,9 +78,9 @@ message RawPayload {
 */
 message Payload {
     optional AssembliesType assemblies = 1;
-    repeated CADComponentType component = 2;
-    repeated ConstraintType constraint = 3;
-    repeated ParameterType parameter = 4;
+    repeated CADComponentType components = 2;
+    repeated ConstraintType constraints = 3;
+    repeated ParametricParametersType parameters = 4;
 }
 
 /**
